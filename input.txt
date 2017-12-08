@@ -1,0 +1,5 @@
+[a-d][a-d5-6]*    {IDENTIFIER}
+(ab|cd)acbd*    {IDENTIFIER}
+(a|b|c|d)*def([0-3]|z)* {A}
+(ab)*[abc]*((a|c)bd)*   {IDENTIFIER}
+[a-z0-9A-Z]@[0-9a-zA-Z]*.com    {IDENTIFIER}
