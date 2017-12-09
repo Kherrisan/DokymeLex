@@ -18,8 +18,10 @@ public class Monitor {
 
     public void parseREFile() {
         String line;
+        NoDefiniteAutomation currentNFA;
         while ((line = reFile.readline()) != null) {
-            NoDefiniteAutomation.build(parseRELine(line));
+            currentNFA = NoDefiniteAutomation.build(parseRELine(line));
+//            NoDefiniteAutomation.VisualFrame visualFrame = currentNFA.new VisualFrame();
         }
     }
 
@@ -27,9 +29,16 @@ public class Monitor {
 
     }
 
-    private RegularExpression parseRELine(String line) {
+    public RegularExpression parseRELine(String line) {
         int start = line.indexOf('{');
         int end = line.indexOf('}');
         return new RegularExpression(line.substring(0, start).trim(), line.substring(start + 1, end).trim());
+    }
+
+    public static Monitor mock() {
+        FileReader input = new FileReader("input.txt");
+        FileReader output = new FileReader("output.txt");
+        Monitor monitor = new Monitor(input, output);
+        return monitor;
     }
 }

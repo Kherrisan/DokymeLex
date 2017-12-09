@@ -9,16 +9,24 @@ import java.util.List;
 public class State {
     private static int sid = 0;
 
-    private int id;
-    private String tag;
+    public int id;
+    public String tag;
+
+    @Override
+    public int hashCode() {
+        return id;
+    }
 
     @Override
     public boolean equals(Object obj) {
+        if (obj == null) {
+            return false;
+        }
         if (!(obj instanceof State)) {
             return false;
         } else {
             State another = (State) obj;
-            if (id == another.id && tag.equals(another.tag)) {
+            if (id == another.id) {
                 return true;
             } else {
                 return false;

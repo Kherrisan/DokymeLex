@@ -1,4 +1,4 @@
-[a-d][a-d5-6]*    {IDENTIFIER}
+(a|b)*ab    {IDENTIFIER}
 (ab|cd)acbd*    {IDENTIFIER}
 (a|b|c|d)*def([0-3]|z)* {A}
 (ab)*[abc]*((a|c)bd)*   {IDENTIFIER}

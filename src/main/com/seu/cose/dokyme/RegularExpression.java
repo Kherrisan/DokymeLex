@@ -28,6 +28,12 @@ public class RegularExpression {
         this.tag = tag;
     }
 
+    public static RegularExpression mock() {
+        Monitor monitor = Monitor.mock();
+        FileReader reFile = new FileReader("input.txt");
+        return monitor.parseRELine(reFile.readline());
+    }
+
     public static void main(String[] args) {
 
     }

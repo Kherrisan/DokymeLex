@@ -20,6 +20,19 @@ public class Transition {
     }
 
     @Override
+    public boolean equals(Object obj) {
+        if (obj == null) {
+            return false;
+        } else if (!(obj instanceof Transition)) {
+            return false;
+        } else if (tag.equals(((Transition) obj).tag)) {
+            return true;
+        } else {
+            return false;
+        }
+    }
+
+    @Override
     public String toString() {
         return tag + "";
     }

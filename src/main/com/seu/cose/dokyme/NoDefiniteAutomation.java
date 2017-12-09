@@ -11,10 +11,13 @@ import edu.uci.ics.jung.visualization.BasicVisualizationServer;
 import edu.uci.ics.jung.visualization.decorators.ToStringLabeller;
 import edu.uci.ics.jung.visualization.renderers.Renderer;
 
+
 import javax.swing.*;
 
 import java.awt.*;
+import java.util.ArrayList;
 import java.util.Stack;
+import java.util.List;
 
 /**
  * Created by zdksc on 2017/12/7.
@@ -28,6 +31,10 @@ public class NoDefiniteAutomation {
     public class VisualFrame extends JFrame {
         private Layout<State, Transition> layout;
         private BasicVisualizationServer<State, Transition> server;
+
+        public VisualFrame() {
+            this(graph);
+        }
 
         public VisualFrame(Graph<State, Transition> graph) {
             super("Hello World");
@@ -46,9 +53,10 @@ public class NoDefiniteAutomation {
         }
     }
 
-    private DirectedGraph<State, Transition> graph;
-    private State start;
-    private State end;
+    public DirectedGraph<State, Transition> graph;
+    public State start;
+    public State end;
+    public RegularExpression re;
 
     public NoDefiniteAutomation() {
     }
@@ -73,13 +81,50 @@ public class NoDefiniteAutomation {
         return null;
     }
 
+    /**
+     * @return
+     */
+    public List<Character> getAllTransitionTag() {
+        List<Character> characters = new ArrayList<>();
+        for (Character c : re.re.toCharArray()) {
+            if (!characters.contains(c) && !RegularExpression.operators.containsKey(c)) {
+                characters.add(c);
+            }
+        }
+        return characters;
+    }
+
+    /**
+     * 在本NFA后连接一个NFA。
+     *
+     * @param next 下一个NFA。
+     * @return 返回本NFA。
+     */
     public NoDefiniteAutomation concat(NoDefiniteAutomation next) {
+        for (State state : next.graph.getVertices()) {
+            graph.addVertex(state);
+            for (Transition edge : next.graph.getOutEdges(state)) {
+                graph.addEdge(edge, state, next.graph.getDest(edge), EdgeType.DIRECTED);
+            }
+        }
         graph.addEdge(new Transition(), end, next.start);
         end = next.end;
         return this;
     }
 
+    /**
+     * 在本NFA上并列一个NFA。
+     *
+     * @param another 要并列的另一个NFA。
+     * @return 本NFA。
+     */
     public NoDefiniteAutomation parellize(NoDefiniteAutomation another) {
+        for (State state : another.graph.getVertices()) {
+            graph.addVertex(state);
+            for (Transition edge : another.graph.getOutEdges(state)) {
+                graph.addEdge(edge, state, another.graph.getDest(edge), EdgeType.DIRECTED);
+            }
+        }
         State newStart = new State();
         State newEnd = new State();
         graph.addEdge(new Transition(), start, another.start, EdgeType.DIRECTED);
@@ -96,55 +141,75 @@ public class NoDefiniteAutomation {
         return graph.getOutEdges(temp).toArray(new Transition[]{})[0].tag;
     }
 
+    /**
+     * 由输入的正则表达式，进行预处理后，利用tomhonson算法构造NFA的函数。
+     *
+     * @param re 输入的原始正则表达式。
+     * @return 构造出来的NFA。
+     */
     public static NoDefiniteAutomation build(RegularExpression re) {
+
+        //预处理。
         Logger.debug("Raw input:" + re.re);
-        re = addConcatOpt(re);
+        re = prePreProcessor(re);
         Logger.debug("Added concat symbol and transform range format to or:" + re.re);
         re = infix2suffix(re);
         Logger.debug("Transform infix to suffix:" + re.re);
-//        Stack<NoDefiniteAutomation> stack = new Stack<>();
-//        NoDefiniteAutomation noDefiniteAutomation = new NoDefiniteAutomation();
-//        noDefiniteAutomation.graph = new DirectedSparseMultigraph<>();
-//        char[] characters = re.re.toCharArray();
-//        for (char cur : characters) {
-//            switch (cur) {
-//                case '+': {
-//                    //TODO
-//                    break;
-//                }
-//                case '-': {
-//                    NoDefiniteAutomation last = stack.pop();
-//                    char end = last.getOnlyCharacter();
-//                    char begin = stack.pop().getOnlyCharacter();
-//                    for (char it = begin; it != end; it++) {
-//                        last.parellize(new NoDefiniteAutomation(it));
-//                    }
-//                    last.parellize(new NoDefiniteAutomation(end));
-//                    stack.push(last);
-//                    break;
-//                }
-//                case '*': {
-//                    NoDefiniteAutomation last = stack.pop();
-//                    last.graph.addEdge(new Transition(), last.end, last.start, EdgeType.DIRECTED);
-//                    stack.push(last);
-//                    break;
-//                }
-//                case '|': {
-//                    NoDefiniteAutomation last = stack.pop();
-//                    NoDefiniteAutomation lastTwo = stack.pop();
-//                    last.parellize(lastTwo);
-//                    stack.push(last);
-//                    break;
-//                }
-//                default:
-//                    stack.add(new NoDefiniteAutomation(cur));
-//                    break;
-//            }
-//        }
-        return null;
+
+        //Tomphonson算法构造NFA。
+        Stack<NoDefiniteAutomation> stack = new Stack<>();
+        char[] characters = re.re.toCharArray();
+        for (char cur : characters) {
+            switch (cur) {
+                case '~': {
+                    NoDefiniteAutomation last = stack.pop();
+                    NoDefiniteAutomation lastTwo = stack.pop();
+                    stack.push(lastTwo.concat(last));
+                    break;
+                }
+                case '*': {
+                    NoDefiniteAutomation last = stack.pop();
+                    State newStart = new State();
+                    State newEnd = new State();
+                    last.graph.addEdge(new Transition(), newStart, newEnd, EdgeType.DIRECTED);
+                    last.graph.addEdge(new Transition(), newStart, last.start, EdgeType.DIRECTED);
+                    last.graph.addEdge(new Transition(), last.end, newEnd, EdgeType.DIRECTED);
+                    last.graph.addEdge(new Transition(), last.end, last.start, EdgeType.DIRECTED);
+                    last.start = newStart;
+                    last.end = newEnd;
+                    stack.push(last);
+                    break;
+                }
+                case '|': {
+                    NoDefiniteAutomation last = stack.pop();
+                    NoDefiniteAutomation lastTwo = stack.pop();
+                    stack.push(last.parellize(lastTwo));
+                    break;
+                }
+                default:
+                    stack.add(new NoDefiniteAutomation(cur));
+                    break;
+            }
+        }
+        if (stack.size() != 1) {
+            Logger.error("The final element left in stack is not only one");
+            return null;
+        }
+        NoDefiniteAutomation nfa = stack.pop();
+        if (re.tag != null) {
+            nfa.end.tag = re.tag;
+        }
+        nfa.re = re;
+        return nfa;
     }
 
-    private static RegularExpression addConcatOpt(RegularExpression re) {
+    /**
+     * 预处理部分第一个步骤，补全连接符。并且把[a-z]的形式转换为了(a|b|c|d...|z)的形式。
+     *
+     * @param re 输入的正则表达式（原始形式）。
+     * @return 正则表达式对象。
+     */
+    private static RegularExpression prePreProcessor(RegularExpression re) {
         char[] chars = re.re.toCharArray();
         PreprocessState pstate = PreprocessState.START;
         String result = "";
@@ -212,6 +277,12 @@ public class NoDefiniteAutomation {
         return new RegularExpression(result, re.tag);
     }
 
+    /**
+     * 将正则表达式中缀形式转换为后缀形式。
+     *
+     * @param re 正则表达式对象，已经补全了连接符并且[a-z]的形式转换为了(a|b|c|d...|z)的形式。
+     * @return 预处理结束的正则表达式对象。
+     */
     private static RegularExpression infix2suffix(RegularExpression re) {
         Stack<Character> operators = new Stack<>();
         Stack<Character> temp = new Stack<>();
@@ -264,8 +335,11 @@ public class NoDefiniteAutomation {
         return new RegularExpression(result, re.tag);
     }
 
+    public static NoDefiniteAutomation mock() {
+        return build(RegularExpression.mock());
+    }
+
     public static void main(String[] args) {
         NoDefiniteAutomation nfa = new NoDefiniteAutomation();
-
     }
 }
