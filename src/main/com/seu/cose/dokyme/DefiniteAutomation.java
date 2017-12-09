@@ -4,7 +4,6 @@ import edu.uci.ics.jung.graph.DirectedSparseMultigraph;
 import edu.uci.ics.jung.graph.Graph;
 
 import java.util.*;
-import java.util.concurrent.CopyOnWriteArrayList;
 
 /**
  * Created by zdksc on 2017/12/7.
@@ -43,14 +42,63 @@ public class DefiniteAutomation {
         }
     }
 
-    private List<TableEntry> table;
-    private List<Character> allTrans;
-    private NoDefiniteAutomation nfa;
-    private Graph<State, Transition> graph;
-    private State start;
-    private Set<State> endStates;
+    public class Cursor {
+        private State current;
 
-    public static DefiniteAutomation build(NoDefiniteAutomation nfa) {
+        public Cursor() {
+            current = start;
+        }
+
+        public void reset() {
+            current = start;
+        }
+
+        public boolean step(Character character) {
+            for (Transition trans : graph.getOutEdges(current)) {
+                if (trans.equals(new Transition(character))) {
+                    current = graph.getDest(trans);
+                    return true;
+                }
+            }
+            return false;
+        }
+
+        public String end() {
+            for (State state : endStates) {
+                if (current.equals(state)) {
+                    return state.tag;
+                }
+            }
+            return null;
+        }
+
+        public State current() {
+            return current;
+        }
+    }
+
+    private List<TableEntry> table;
+    private Set<Character> allTrans;
+    private NoDefiniteAutomation nfa;
+    public Graph<State, Transition> graph;
+    public State start;
+    public Set<State> endStates;
+
+    public static DefiniteAutomation build(Set<NoDefiniteAutomation> nfas) {
+        List<NoDefiniteAutomation> tempList = new ArrayList<>();
+        tempList.addAll(nfas);
+        NoDefiniteAutomation nfa = tempList.get(0);
+        Set<State> allEndState = new HashSet<>();
+        allEndState.add(nfa.end);
+        for (int i = 1; i < tempList.size(); i++) {
+            nfa.merge(tempList.get(i));
+            allEndState.add(tempList.get(i).end);
+        }
+        DefiniteAutomation dfa = build(nfa, allEndState);
+        return dfa;
+    }
+
+    public static DefiniteAutomation build(NoDefiniteAutomation nfa, Set<State> allEndState) {
         DefiniteAutomation dfa = new DefiniteAutomation();
         dfa.allTrans = nfa.getAllTransitionTag();
         dfa.nfa = nfa;
@@ -85,14 +133,19 @@ public class DefiniteAutomation {
 
         for (int i = 0; i < dfa.table.size(); i++) {
             TableEntry entry = dfa.table.get(i);
+            for (State potentialEnd : allEndState) {
+                if (entry.nfaStates.contains(potentialEnd)) {
+                    allStates.get(i).tag = potentialEnd.tag;
+                    break;
+                }
+            }
             for (Transition trans : entry.transitions.keySet()) {
                 dfa.graph.addEdge(new Transition(trans.tag), allStates.get(i), allStates.get(entry.transitions.get(trans)));
             }
         }
 
         dfa.start = allStates.get(0);
-        dfa.endStates = new HashSet<>();
-        dfa.endStates.add(nfa.end);
+        dfa.endStates = allEndState;
         return dfa;
     }
 
@@ -143,10 +196,18 @@ public class DefiniteAutomation {
     }
 
     public static DefiniteAutomation mock() {
-        return build(NoDefiniteAutomation.mock());
+        Set<NoDefiniteAutomation> nfas = new HashSet<>();
+        nfas.add(NoDefiniteAutomation.mock());
+        return build(nfas);
+    }
+
+    public static DefiniteAutomation mock(boolean multiNFA) {
+        Set<NoDefiniteAutomation> nfas = new HashSet<>();
+        nfas.addAll(NoDefiniteAutomation.mocks());
+        return build(nfas);
     }
 
     public static void main(String[] args) {
-        VisualFrame visualFrame = new VisualFrame(mock().graph);
+        VisualFrame visualFrame = new VisualFrame(mock(true).graph);
     }
 }

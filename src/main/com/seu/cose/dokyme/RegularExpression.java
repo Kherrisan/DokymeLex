@@ -1,5 +1,6 @@
 package com.seu.cose.dokyme;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 
@@ -32,6 +33,17 @@ public class RegularExpression {
         Monitor monitor = Monitor.mock();
         FileReader reFile = new FileReader("input.txt");
         return monitor.parseRELine(reFile.readline());
+    }
+
+    public static List<RegularExpression> mocks() {
+        Monitor monitor = Monitor.mock();
+        List<RegularExpression> res = new ArrayList<>();
+        FileReader reFile = new FileReader("input.txt");
+        String line;
+        while ((line = reFile.readline()) != null) {
+            res.add(monitor.parseRELine(line));
+        }
+        return res;
     }
 
     public static void main(String[] args) {

@@ -1,22 +1,11 @@
 package com.seu.cose.dokyme;
 
-import edu.uci.ics.jung.algorithms.layout.CircleLayout;
-import edu.uci.ics.jung.algorithms.layout.Layout;
 import edu.uci.ics.jung.graph.DirectedGraph;
 import edu.uci.ics.jung.graph.DirectedSparseGraph;
 import edu.uci.ics.jung.graph.DirectedSparseMultigraph;
-import edu.uci.ics.jung.graph.Graph;
 import edu.uci.ics.jung.graph.util.EdgeType;
-import edu.uci.ics.jung.visualization.BasicVisualizationServer;
-import edu.uci.ics.jung.visualization.decorators.ToStringLabeller;
-import edu.uci.ics.jung.visualization.renderers.Renderer;
 
-
-import javax.swing.*;
-
-import java.awt.*;
-import java.util.ArrayList;
-import java.util.Stack;
+import java.util.*;
 import java.util.List;
 
 /**
@@ -59,14 +48,30 @@ public class NoDefiniteAutomation {
     /**
      * @return
      */
-    public List<Character> getAllTransitionTag() {
-        List<Character> characters = new ArrayList<>();
-        for (Character c : re.re.toCharArray()) {
-            if (!characters.contains(c) && !RegularExpression.operators.containsKey(c)) {
-                characters.add(c);
+    public Set<Character> getAllTransitionTag() {
+        Set<Character> charset = new HashSet<>();
+        for (Transition trans : graph.getEdges()) {
+            if (!RegularExpression.operators.containsKey(trans.tag)) {
+                charset.add(trans.tag);
             }
         }
-        return characters;
+        return charset;
+    }
+
+    /**
+     * 将另一个NFA中的顶点和边拷贝到this上。
+     *
+     * @param another 另一个NFA。
+     * @return this。
+     */
+    public NoDefiniteAutomation copy(NoDefiniteAutomation another) {
+        for (State state : another.graph.getVertices()) {
+            graph.addVertex(state);
+            for (Transition edge : another.graph.getOutEdges(state)) {
+                graph.addEdge(edge, state, another.graph.getDest(edge), EdgeType.DIRECTED);
+            }
+        }
+        return this;
     }
 
     /**
@@ -76,14 +81,24 @@ public class NoDefiniteAutomation {
      * @return 返回本NFA。
      */
     public NoDefiniteAutomation concat(NoDefiniteAutomation next) {
-        for (State state : next.graph.getVertices()) {
-            graph.addVertex(state);
-            for (Transition edge : next.graph.getOutEdges(state)) {
-                graph.addEdge(edge, state, next.graph.getDest(edge), EdgeType.DIRECTED);
-            }
-        }
+        copy(next);
         graph.addEdge(new Transition(), end, next.start);
         end = next.end;
+        return this;
+    }
+
+    /**
+     * 将两个NFA的头结点合并（增加一个新的头结点和两个epslon边）
+     *
+     * @param another 另一个NFA。
+     * @return 统领两个NFA的大的NFA（也就是this）。
+     */
+    public NoDefiniteAutomation merge(NoDefiniteAutomation another) {
+        copy(another);
+        State newStart = new State();
+        graph.addEdge(new Transition(), newStart, start, EdgeType.DIRECTED);
+        graph.addEdge(new Transition(), newStart, another.start, EdgeType.DIRECTED);
+        start = newStart;
         return this;
     }
 
@@ -94,12 +109,7 @@ public class NoDefiniteAutomation {
      * @return 本NFA。
      */
     public NoDefiniteAutomation parellize(NoDefiniteAutomation another) {
-        for (State state : another.graph.getVertices()) {
-            graph.addVertex(state);
-            for (Transition edge : another.graph.getOutEdges(state)) {
-                graph.addEdge(edge, state, another.graph.getDest(edge), EdgeType.DIRECTED);
-            }
-        }
+        copy(another);
         State newStart = new State();
         State newEnd = new State();
         graph.addEdge(new Transition(), start, another.start, EdgeType.DIRECTED);
@@ -314,7 +324,17 @@ public class NoDefiniteAutomation {
         return build(RegularExpression.mock());
     }
 
+    public static List<NoDefiniteAutomation> mocks() {
+        List<NoDefiniteAutomation> nfas = new ArrayList<>();
+        List<RegularExpression> res = RegularExpression.mocks();
+        for (RegularExpression re : res) {
+            nfas.add(build(re));
+        }
+        return nfas;
+    }
+
     public static void main(String[] args) {
         NoDefiniteAutomation nfa = new NoDefiniteAutomation();
+        NoDefiniteAutomation.mocks();
     }
 }

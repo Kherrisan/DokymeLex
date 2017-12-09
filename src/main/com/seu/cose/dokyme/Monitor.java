@@ -1,7 +1,9 @@
 package com.seu.cose.dokyme;
 
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 /**
  * Created by zdksc on 2017/12/7.
@@ -18,11 +20,12 @@ public class Monitor {
 
     public void parseREFile() {
         String line;
-        NoDefiniteAutomation currentNFA;
+        Set<NoDefiniteAutomation> nfas = new HashSet<>();
         while ((line = reFile.readline()) != null) {
-            currentNFA = NoDefiniteAutomation.build(parseRELine(line));
-//            NoDefiniteAutomation.VisualFrame visualFrame = currentNFA.new VisualFrame();
+            nfas.add(NoDefiniteAutomation.build(parseRELine(line)));
         }
+        DefiniteAutomation dfa = DefiniteAutomation.build(nfas);
+
     }
 
     public void parseTargetFile() {
@@ -40,5 +43,9 @@ public class Monitor {
         FileReader output = new FileReader("output.txt");
         Monitor monitor = new Monitor(input, output);
         return monitor;
+    }
+
+    public static void main(String[] args) {
+
     }
 }

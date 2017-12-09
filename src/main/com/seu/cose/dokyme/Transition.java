@@ -20,6 +20,11 @@ public class Transition {
     }
 
     @Override
+    public int hashCode() {
+        return id;
+    }
+
+    @Override
     public boolean equals(Object obj) {
         if (obj == null) {
             return false;
