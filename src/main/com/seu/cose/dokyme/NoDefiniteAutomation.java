@@ -28,31 +28,6 @@ public class NoDefiniteAutomation {
         LAST_IS_CHAR, LAST_IS_R_BRACKET, LAST_IS_R_PARTNESS, LAST_IS_SINGLE, IN_BRACKET, LAST_IS_BINARY, START, IN_BRACKET_RANGE, IN_BRACKET_SINGLE
     }
 
-    public class VisualFrame extends JFrame {
-        private Layout<State, Transition> layout;
-        private BasicVisualizationServer<State, Transition> server;
-
-        public VisualFrame() {
-            this(graph);
-        }
-
-        public VisualFrame(Graph<State, Transition> graph) {
-            super("Hello World");
-            layout = new CircleLayout<State, Transition>(graph);
-            layout.setSize(new Dimension(100, 100));
-            server = new BasicVisualizationServer<>(layout);
-            server.setPreferredSize(new Dimension(350, 350));
-            server.getRenderContext().setVertexLabelTransformer(new ToStringLabeller());
-            server.getRenderer().getVertexLabelRenderer().setPosition(Renderer.VertexLabel.Position.CNTR);
-            server.getRenderContext().setVertexFillPaintTransformer(e -> Color.WHITE);
-            server.getRenderContext().setEdgeLabelTransformer(new ToStringLabeller());
-            setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-            getContentPane().add(server);
-            pack();
-            setVisible(true);
-        }
-    }
-
     public DirectedGraph<State, Transition> graph;
     public State start;
     public State end;

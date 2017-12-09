@@ -147,6 +147,6 @@ public class DefiniteAutomation {
     }
 
     public static void main(String[] args) {
-        mock();
+        VisualFrame visualFrame = new VisualFrame(mock().graph);
     }
 }
