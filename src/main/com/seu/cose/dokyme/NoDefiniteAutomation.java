@@ -144,6 +144,7 @@ public class NoDefiniteAutomation {
         //Tomphonson算法构造NFA。
         Stack<NoDefiniteAutomation> stack = new Stack<>();
         char[] characters = re.re.toCharArray();
+<<<<<<< HEAD
         boolean converting = false;
         for (char cur : characters) {
             switch (cur) {
@@ -153,11 +154,17 @@ public class NoDefiniteAutomation {
                         converting = false;
                         break;
                     }
+=======
+        for (char cur : characters) {
+            switch (cur) {
+                case '~': {
+>>>>>>> 940d6fa162c4415073f2533050e940dc2271d44b
                     NoDefiniteAutomation last = stack.pop();
                     NoDefiniteAutomation lastTwo = stack.pop();
                     stack.push(lastTwo.concat(last));
                     break;
                 }
+<<<<<<< HEAD
                 case '+': {
                     if (converting) {
                         stack.add(new NoDefiniteAutomation(cur));
@@ -181,6 +188,9 @@ public class NoDefiniteAutomation {
                         converting = false;
                         break;
                     }
+=======
+                case '*': {
+>>>>>>> 940d6fa162c4415073f2533050e940dc2271d44b
                     NoDefiniteAutomation last = stack.pop();
                     State newStart = new State();
                     State newEnd = new State();
@@ -194,19 +204,25 @@ public class NoDefiniteAutomation {
                     break;
                 }
                 case '|': {
+<<<<<<< HEAD
                     if (converting) {
                         stack.add(new NoDefiniteAutomation(cur));
                         converting = false;
                         break;
                     }
+=======
+>>>>>>> 940d6fa162c4415073f2533050e940dc2271d44b
                     NoDefiniteAutomation last = stack.pop();
                     NoDefiniteAutomation lastTwo = stack.pop();
                     stack.push(last.parellize(lastTwo));
                     break;
                 }
+<<<<<<< HEAD
                 case '\\':
                     converting = true;
                     break;
+=======
+>>>>>>> 940d6fa162c4415073f2533050e940dc2271d44b
                 default:
                     stack.add(new NoDefiniteAutomation(cur));
                     break;
@@ -217,8 +233,13 @@ public class NoDefiniteAutomation {
             return null;
         }
         NoDefiniteAutomation nfa = stack.pop();
+<<<<<<< HEAD
         if (re.action != null) {
             nfa.end.tag = re.action;
+=======
+        if (re.tag != null) {
+            nfa.end.tag = re.tag;
+>>>>>>> 940d6fa162c4415073f2533050e940dc2271d44b
         }
         nfa.re = re;
         return nfa;
@@ -234,37 +255,50 @@ public class NoDefiniteAutomation {
         char[] chars = re.re.toCharArray();
         PreprocessState pstate = PreprocessState.START;
         String result = "";
+<<<<<<< HEAD
         boolean convertMeaning = false;
+=======
+>>>>>>> 940d6fa162c4415073f2533050e940dc2271d44b
         char rangeStart = 'a';
         for (char cur : chars) {
             switch (cur) {
                 case '(':
+<<<<<<< HEAD
                     if (convertMeaning) {
                         result += cur;
                         convertMeaning = false;
                         break;
                     }
                     if (pstate.equals(PreprocessState.LAST_IS_SINGLE) || pstate.equals(PreprocessState.LAST_IS_R_BRACKET) || pstate.equals(PreprocessState.LAST_IS_R_PARTNESS)) {
+=======
+                    if (pstate.equals(PreprocessState.LAST_IS_SINGLE)) {
+>>>>>>> 940d6fa162c4415073f2533050e940dc2271d44b
                         result += '~';
                     }
                     pstate = PreprocessState.START;
                     result += cur;
                     break;
                 case ')':
+<<<<<<< HEAD
                     if (convertMeaning) {
                         result += cur;
                         convertMeaning = false;
                         break;
                     }
+=======
+>>>>>>> 940d6fa162c4415073f2533050e940dc2271d44b
                     result += cur;
                     pstate = PreprocessState.LAST_IS_R_PARTNESS;
                     break;
                 case '[':
+<<<<<<< HEAD
                     if (convertMeaning) {
                         result += cur;
                         convertMeaning = false;
                         break;
                     }
+=======
+>>>>>>> 940d6fa162c4415073f2533050e940dc2271d44b
                     if (pstate.equals(PreprocessState.LAST_IS_SINGLE) || pstate.equals(PreprocessState.LAST_IS_R_BRACKET)) {
                         result += "~";
                     }
@@ -272,34 +306,44 @@ public class NoDefiniteAutomation {
                     pstate = PreprocessState.IN_BRACKET;
                     break;
                 case ']':
+<<<<<<< HEAD
                     if (convertMeaning) {
                         result += cur;
                         convertMeaning = false;
                         break;
                     }
+=======
+>>>>>>> 940d6fa162c4415073f2533050e940dc2271d44b
                     result += ')';
                     pstate = PreprocessState.LAST_IS_R_BRACKET;
                     break;
                 case '+':
                 case '*':
+<<<<<<< HEAD
                     if (convertMeaning) {
                         result += cur;
                         convertMeaning = false;
                         break;
                     }
+=======
+>>>>>>> 940d6fa162c4415073f2533050e940dc2271d44b
                     result += cur;
                     pstate = PreprocessState.LAST_IS_SINGLE;
                     break;
                 case '|':
+<<<<<<< HEAD
                     if (convertMeaning) {
                         result += cur;
                         convertMeaning = false;
                         break;
                     }
+=======
+>>>>>>> 940d6fa162c4415073f2533050e940dc2271d44b
                     result += cur;
                     pstate = PreprocessState.LAST_IS_BINARY;
                     break;
                 case '-':
+<<<<<<< HEAD
                     if (convertMeaning) {
                         result += cur;
                         convertMeaning = false;
@@ -309,6 +353,10 @@ public class NoDefiniteAutomation {
                     break;
                 case '\\':
                     convertMeaning = true;
+=======
+                    pstate = PreprocessState.IN_BRACKET_RANGE;
+                    break;
+>>>>>>> 940d6fa162c4415073f2533050e940dc2271d44b
                 default:
                     if (pstate.equals(PreprocessState.IN_BRACKET_RANGE)) {
                         for (char c = (char) (rangeStart + 1); c <= cur; c++) {
@@ -322,7 +370,11 @@ public class NoDefiniteAutomation {
                     } else if (pstate.equals(PreprocessState.IN_BRACKET)) {
                         result += cur;
                         rangeStart = cur;
+<<<<<<< HEAD
                         pstate = PreprocessState.IN_BRACKET_SINGLE;
+=======
+                        pstate = PreprocessState.IN_BRACKET_RANGE;
+>>>>>>> 940d6fa162c4415073f2533050e940dc2271d44b
                     } else if (pstate.equals(PreprocessState.LAST_IS_R_BRACKET) || pstate.equals(PreprocessState.LAST_IS_R_PARTNESS) || pstate.equals(PreprocessState.LAST_IS_SINGLE)) {
                         result += "" + '~' + cur;
                         pstate = PreprocessState.LAST_IS_SINGLE;
@@ -333,7 +385,11 @@ public class NoDefiniteAutomation {
                     break;
             }
         }
+<<<<<<< HEAD
         return new RegularExpression(result, re.action);
+=======
+        return new RegularExpression(result, re.tag);
+>>>>>>> 940d6fa162c4415073f2533050e940dc2271d44b
     }
 
     /**
@@ -347,6 +403,7 @@ public class NoDefiniteAutomation {
         Stack<Character> temp = new Stack<>();
         Character l;
         char[] chars = re.re.toCharArray();
+<<<<<<< HEAD
         boolean convertMeaning = false;
         for (char cur : chars) {
             switch (cur) {
@@ -369,11 +426,20 @@ public class NoDefiniteAutomation {
                         convertMeaning = false;
                         break;
                     }
+=======
+        for (char cur : chars) {
+            switch (cur) {
+                case '(':
+                    operators.add(cur);
+                    break;
+                case ')':
+>>>>>>> 940d6fa162c4415073f2533050e940dc2271d44b
                     while ((l = operators.pop()) != '(') {
                         temp.add(l);
                     }
                     break;
                 case '[':
+<<<<<<< HEAD
                     if (convertMeaning) {
                         temp.add('\\');
                         temp.add(cur);
@@ -389,21 +455,32 @@ public class NoDefiniteAutomation {
                         convertMeaning = false;
                         break;
                     }
+=======
+                    operators.add(cur);
+                    break;
+                case ']':
+>>>>>>> 940d6fa162c4415073f2533050e940dc2271d44b
                     while ((l = operators.pop()) != '[') {
                         temp.add(l);
                     }
                     break;
+<<<<<<< HEAD
                 case '+':
+=======
+>>>>>>> 940d6fa162c4415073f2533050e940dc2271d44b
                 case '-':
                 case '*':
                 case '~':
                 case '|':
+<<<<<<< HEAD
                     if (convertMeaning) {
                         temp.add('\\');
                         temp.add(cur);
                         convertMeaning = false;
                         break;
                     }
+=======
+>>>>>>> 940d6fa162c4415073f2533050e940dc2271d44b
                     if (operators.empty() || operators.peek().equals('(') || operators.peek().equals('[') || RegularExpression.operators.get(cur) > RegularExpression.operators.get(operators.peek())) {
                         operators.push(cur);
                     } else {
@@ -426,7 +503,11 @@ public class NoDefiniteAutomation {
         for (Character c : temp.toArray(new Character[]{})) {
             result += c;
         }
+<<<<<<< HEAD
         return new RegularExpression(result, re.action);
+=======
+        return new RegularExpression(result, re.tag);
+>>>>>>> 940d6fa162c4415073f2533050e940dc2271d44b
     }
 
     public static NoDefiniteAutomation mock() {

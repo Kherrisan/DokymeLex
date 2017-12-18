@@ -42,6 +42,44 @@ public class DefiniteAutomation {
         }
     }
 
+<<<<<<< HEAD
+=======
+    public class Cursor {
+        private State current;
+
+        public Cursor() {
+            current = start;
+        }
+
+        public void reset() {
+            current = start;
+        }
+
+        public boolean step(Character character) {
+            for (Transition trans : graph.getOutEdges(current)) {
+                if (trans.equals(new Transition(character))) {
+                    current = graph.getDest(trans);
+                    return true;
+                }
+            }
+            return false;
+        }
+
+        public String end() {
+            for (State state : endStates) {
+                if (current.equals(state)) {
+                    return state.tag;
+                }
+            }
+            return null;
+        }
+
+        public State current() {
+            return current;
+        }
+    }
+
+>>>>>>> 940d6fa162c4415073f2533050e940dc2271d44b
     private List<TableEntry> table;
     private Set<Character> allTrans;
     private NoDefiniteAutomation nfa;
@@ -91,6 +129,7 @@ public class DefiniteAutomation {
             }
         }
 
+<<<<<<< HEAD
         List<State> dfaStates = new ArrayList<>();
 //        State.resetId();
         for (int i = 0; i < dfa.table.size(); i++) {
@@ -104,16 +143,37 @@ public class DefiniteAutomation {
                 if (entry.nfaStates.contains(nfaEndState)) {
                     dfaStates.get(i).tag = nfaEndState.tag;
                     newEndStates.add(dfaStates.get(i));
+=======
+        List<State> allStates = new ArrayList<>();
+        for (int i = 0; i < dfa.table.size(); i++) {
+            allStates.add(new State("" + i));
+        }
+
+        for (int i = 0; i < dfa.table.size(); i++) {
+            TableEntry entry = dfa.table.get(i);
+            for (State potentialEnd : allEndState) {
+                if (entry.nfaStates.contains(potentialEnd)) {
+                    allStates.get(i).tag = potentialEnd.tag;
+>>>>>>> 940d6fa162c4415073f2533050e940dc2271d44b
                     break;
                 }
             }
             for (Transition trans : entry.transitions.keySet()) {
+<<<<<<< HEAD
                 dfa.graph.addEdge(new Transition(trans.tag), dfaStates.get(i), dfaStates.get(entry.transitions.get(trans)));
             }
         }
 
         dfa.start = dfaStates.get(0);
         dfa.endStates = newEndStates;
+=======
+                dfa.graph.addEdge(new Transition(trans.tag), allStates.get(i), allStates.get(entry.transitions.get(trans)));
+            }
+        }
+
+        dfa.start = allStates.get(0);
+        dfa.endStates = allEndState;
+>>>>>>> 940d6fa162c4415073f2533050e940dc2271d44b
         return dfa;
     }
 
