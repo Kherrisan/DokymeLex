@@ -50,20 +50,20 @@ public class DefiniteAutomation {
     public Set<State> endStates;
 
     public static DefiniteAutomation build(Set<NoDefiniteAutomation> nfas) {
-        List<NoDefiniteAutomation> tempList = new ArrayList<>();
-        tempList.addAll(nfas);
-        NoDefiniteAutomation nfa = tempList.get(0);
+        List<NoDefiniteAutomation> nfaList = new ArrayList<>();
+        nfaList.addAll(nfas);
+        NoDefiniteAutomation leaderNFA = nfaList.get(0);
         Set<State> allEndState = new HashSet<>();
-        allEndState.add(nfa.end);
-        for (int i = 1; i < tempList.size(); i++) {
-            nfa.merge(tempList.get(i));
-            allEndState.add(tempList.get(i).end);
+        allEndState.add(leaderNFA.end);
+        for (int i = 1; i < nfaList.size(); i++) {
+            leaderNFA.merge(nfaList.get(i));
+            allEndState.add(nfaList.get(i).end);
         }
-        DefiniteAutomation dfa = build(nfa, allEndState);
+        DefiniteAutomation dfa = build(leaderNFA, allEndState);
         return dfa;
     }
 
-    public static DefiniteAutomation build(NoDefiniteAutomation nfa, Set<State> allEndState) {
+    private static DefiniteAutomation build(NoDefiniteAutomation nfa, Set<State> allEndState) {
         DefiniteAutomation dfa = new DefiniteAutomation();
         dfa.allTrans = nfa.getAllTransitionTag();
         dfa.nfa = nfa;
@@ -81,19 +81,20 @@ public class DefiniteAutomation {
                 Set<State> extendedStates = dfa.getStateExtension(entry.nfaStates, trans);
                 Set<State> epslnExtendedStates = dfa.getEpsilonClosure(extendedStates);
                 TableEntry potentialEntry = dfa.new TableEntry(epslnExtendedStates);
-                int existedEntryIndex = dfa.table.indexOf(potentialEntry);
-                if (existedEntryIndex == -1) {
-                    dfa.table.add(potentialEntry);
-                    entry.transitions.put(trans, dfa.table.size() - 1);
-                } else {
-                    entry.transitions.put(trans, existedEntryIndex);
+                if(!epslnExtendedStates.isEmpty()){
+                    int existedEntryIndex = dfa.table.indexOf(potentialEntry);
+                    if (existedEntryIndex == -1) {
+                        dfa.table.add(potentialEntry);
+                        entry.transitions.put(trans, dfa.table.size() - 1);
+                    } else {
+                        entry.transitions.put(trans, existedEntryIndex);
+                    }
                 }
             }
         }
 
-<<<<<<< HEAD
+        State.resetId();
         List<State> dfaStates = new ArrayList<>();
-//        State.resetId();
         for (int i = 0; i < dfa.table.size(); i++) {
             dfaStates.add(new State());
         }
@@ -105,37 +106,16 @@ public class DefiniteAutomation {
                 if (entry.nfaStates.contains(nfaEndState)) {
                     dfaStates.get(i).tag = nfaEndState.tag;
                     newEndStates.add(dfaStates.get(i));
-=======
-        List<State> allStates = new ArrayList<>();
-        for (int i = 0; i < dfa.table.size(); i++) {
-            allStates.add(new State("" + i));
-        }
-
-        for (int i = 0; i < dfa.table.size(); i++) {
-            TableEntry entry = dfa.table.get(i);
-            for (State potentialEnd : allEndState) {
-                if (entry.nfaStates.contains(potentialEnd)) {
-                    allStates.get(i).tag = potentialEnd.tag;
->>>>>>> 940d6fa162c4415073f2533050e940dc2271d44b
                     break;
                 }
             }
             for (Transition trans : entry.transitions.keySet()) {
-<<<<<<< HEAD
                 dfa.graph.addEdge(new Transition(trans.tag), dfaStates.get(i), dfaStates.get(entry.transitions.get(trans)));
             }
         }
 
         dfa.start = dfaStates.get(0);
         dfa.endStates = newEndStates;
-=======
-                dfa.graph.addEdge(new Transition(trans.tag), allStates.get(i), allStates.get(entry.transitions.get(trans)));
-            }
-        }
-
-        dfa.start = allStates.get(0);
-        dfa.endStates = allEndState;
->>>>>>> 940d6fa162c4415073f2533050e940dc2271d44b
         return dfa;
     }
 

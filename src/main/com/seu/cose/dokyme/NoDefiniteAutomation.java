@@ -13,6 +13,13 @@ import java.util.List;
  */
 public class NoDefiniteAutomation {
 
+    private static Map<String, Character> ConvertingMap = new HashMap<>();
+
+    static {
+        ConvertingMap.put("\\n", '\n');
+        ConvertingMap.put("\\r", '\r');
+    }
+
     private enum PreprocessState {
         LAST_IS_CHAR, LAST_IS_R_BRACKET, LAST_IS_R_PARTNESS, LAST_IS_SINGLE, IN_BRACKET, LAST_IS_BINARY, START, IN_BRACKET_RANGE, IN_BRACKET_SINGLE
     }
@@ -208,6 +215,11 @@ public class NoDefiniteAutomation {
                     converting = true;
                     break;
                 default:
+                    if (converting) {
+                        stack.add(new NoDefiniteAutomation(ConvertingMap.get("\\" + cur)));
+                        converting = false;
+                        break;
+                    }
                     stack.add(new NoDefiniteAutomation(cur));
                     break;
             }
@@ -235,6 +247,7 @@ public class NoDefiniteAutomation {
         PreprocessState pstate = PreprocessState.START;
         String result = "";
         boolean convertMeaning = false;
+        boolean makeConverting = false;
         char rangeStart = 'a';
         for (char cur : chars) {
             switch (cur) {
@@ -308,27 +321,36 @@ public class NoDefiniteAutomation {
                     pstate = PreprocessState.IN_BRACKET_RANGE;
                     break;
                 case '\\':
-                    convertMeaning = true;
+                    makeConverting = true;
                 default:
-                    if (pstate.equals(PreprocessState.IN_BRACKET_RANGE)) {
-                        for (char c = (char) (rangeStart + 1); c <= cur; c++) {
-                            result += ('|' + "" + c);
+                    if (!convertMeaning) {
+                        if (pstate.equals(PreprocessState.IN_BRACKET_RANGE)) {
+                            for (char c = (char) (rangeStart + 1); c <= cur; c++) {
+                                result += ('|' + "" + c);
+                            }
+                            pstate = PreprocessState.IN_BRACKET_SINGLE;
+                        } else if (pstate.equals(PreprocessState.IN_BRACKET_SINGLE)) {
+                            result += "" + '|' + cur;
+                            rangeStart = cur;
+                            pstate = PreprocessState.IN_BRACKET_SINGLE;
+                        } else if (pstate.equals(PreprocessState.IN_BRACKET)) {
+                            result += cur;
+                            rangeStart = cur;
+                            pstate = PreprocessState.IN_BRACKET_SINGLE;
+                        } else if (pstate.equals(PreprocessState.LAST_IS_R_BRACKET) || pstate.equals(PreprocessState.LAST_IS_R_PARTNESS) || pstate.equals(PreprocessState.LAST_IS_SINGLE)) {
+                            result += "" + '~' + cur;
+                            pstate = PreprocessState.LAST_IS_SINGLE;
+                        } else {
+                            result += cur;
+                            pstate = PreprocessState.LAST_IS_SINGLE;
                         }
-                        pstate = PreprocessState.IN_BRACKET_SINGLE;
-                    } else if (pstate.equals(PreprocessState.IN_BRACKET_SINGLE)) {
-                        result += "" + '|' + cur;
-                        rangeStart = cur;
-                        pstate = PreprocessState.IN_BRACKET_SINGLE;
-                    } else if (pstate.equals(PreprocessState.IN_BRACKET)) {
-                        result += cur;
-                        rangeStart = cur;
-                        pstate = PreprocessState.IN_BRACKET_SINGLE;
-                    } else if (pstate.equals(PreprocessState.LAST_IS_R_BRACKET) || pstate.equals(PreprocessState.LAST_IS_R_PARTNESS) || pstate.equals(PreprocessState.LAST_IS_SINGLE)) {
-                        result += "" + '~' + cur;
-                        pstate = PreprocessState.LAST_IS_SINGLE;
                     } else {
                         result += cur;
-                        pstate = PreprocessState.LAST_IS_SINGLE;
+                        convertMeaning = false;
+                    }
+                    if (makeConverting) {
+                        convertMeaning = true;
+                        makeConverting = false;
                     }
                     break;
             }
@@ -414,6 +436,10 @@ public class NoDefiniteAutomation {
                     }
                     break;
                 default:
+                    if (convertMeaning) {
+                        temp.add('\\');
+                        convertMeaning = false;
+                    }
                     //是操作数
                     temp.add(cur);
                     break;

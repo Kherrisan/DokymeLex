@@ -1,23 +1,18 @@
-[0-9]       {digit}
+
 %%
 private int counter = 0;
 %%
-if    {incrementCounter();return "IF";}
-digit+   {return "CONSTANT";}
-\+     {return "ADD";}
-/     {return "DIV";}
-%     {return "MOD";}
+if  {return "IF";}
+while   {return "WHILE";}
+\n\r  {return "CRLF";}
 
 %%
-public String parseType(){
-    //this.token是一个String类型的、代表着当前识别出来的字符串的变量。
-}
-public String printf(String content){
+public void printf(String content){
     System.out.println("["+this.token+"]"+content);
 }
 public void incrementCounter(){
     this.counter++;
 }
-public static void main(String[] args){
-    dokyme(); //开始运行分析器。
+public static void main(String[] args) {
+    new DokymeLexer(args);
 }

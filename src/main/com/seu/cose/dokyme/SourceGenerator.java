@@ -1,5 +1,7 @@
 package com.seu.cose.dokyme;
 
+import java.util.ArrayList;
+
 /**
  * Created by zdksc on 2017/12/9.
  */
@@ -17,7 +19,7 @@ public class SourceGenerator {
     }
 
     private void buildSwitchBlock() {
-        writeLineWithIndents("switch (DOKYME_STATE){");
+        writeLineWithIndents("switch (state){");
         for (State state : dfa.graph.getVertices()) {
             buildCaseBlock(state);
         }
@@ -29,33 +31,69 @@ public class SourceGenerator {
         contextIndent++;
         writeLineWithIndents("case " + state.id + ": ");
         contextIndent++;
+        writeLineWithIndents("if(debug) {");
+        contextIndent++;
+        writeLineWithIndents("System.out.println(\"[DEBUG] Enter state:\" + " + state.id + ");");
+        contextIndent--;
+        writeLineWithIndents("}");
         if (dfa.endStates.contains(state)) {
             writeLineWithIndents("end = i;");
             writeLineWithIndents("lastEndState = " + state.id + ";");
         }
+        boolean firstIf = true;
         for (Transition trans : dfa.graph.getOutEdges(state)) {
-            buildIfBlock(trans);
+            if (firstIf) {
+                buildIfBlock(trans, false);
+                firstIf = false;
+            } else {
+                buildIfBlock(trans, true);
+            }
         }
-        writeLineWithIndents("else {");
+        if (dfa.graph.getOutEdges(state).isEmpty()) {
+            writeLineWithIndents("{");
+        } else {
+            writeLineWithIndents("else {");
+        }
         contextIndent++;
-        writeLineWithIndents("outputToken(line.substring(start, end+1), endState(lastEndState));");
+        writeLineWithIndents("type = endState(lastEndState);");
+        writeLineWithIndents("outputToken();");
+        writeLineWithIndents("if(reachEnd) {");
+        contextIndent++;
+        writeLineWithIndents("i = end;");
         contextIndent--;
+        writeLineWithIndents("} else {");
+        contextIndent++;
+        writeLineWithIndents("i = end - 1;");
+        contextIndent--;
+        writeLineWithIndents("}");
         writeLineWithIndents("}");
         writeLineWithIndents("break;");
         contextIndent--;
         contextIndent--;
     }
 
-    private void buildIfBlock(Transition trans) {
-        writeLineWithIndents("if(ch.equals('" + trans.tag + "') {");
+    private void buildIfBlock(Transition trans, boolean uElse) {
+        String elseIf;
+        if (uElse) {
+            elseIf = "else ";
+        } else {
+            elseIf = "";
+        }
+        if (trans.tag.equals('\n')) {
+            writeLineWithIndents(elseIf + "if(ch==0x0d) {");
+        } else if (trans.tag.equals('\r')) {
+            writeLineWithIndents(elseIf + "if(ch==0x0a) {");
+        } else {
+            writeLineWithIndents(elseIf + "if(ch=='" + trans.tag + "') {");
+        }
         contextIndent++;
-        writeLineWithIndents("DOKYME_STATE = " + dfa.graph.getDest(trans).id + ";");
+        writeLineWithIndents("state = " + dfa.graph.getDest(trans).id + ";");
         contextIndent--;
         writeLineWithIndents("}");
     }
 
     private void buildStartState() {
-        writeLineWithIndents("int DOKYME_STATE=" + dfa.start.id + ";");
+        writeLineWithIndents("startState = " + dfa.start.id + ";");
     }
 
     /**
@@ -71,7 +109,7 @@ public class SourceGenerator {
      *
      */
     private void buildFunctions() {
-        for (String func : lexFile.getDelcarations()) {
+        for (String func : lexFile.getPrograms()) {
             writeLineWithIndents(func);
         }
     }
@@ -83,6 +121,7 @@ public class SourceGenerator {
         for (State end : dfa.endStates) {
             writeLineWithIndents("if(state==" + end.id + "){" + end.tag + "}");
         }
+        writeLineWithIndents("return \"NULL\";");
     }
 
     /**
