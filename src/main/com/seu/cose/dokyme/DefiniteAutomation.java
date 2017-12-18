@@ -55,9 +55,11 @@ public class DefiniteAutomation {
         NoDefiniteAutomation leaderNFA = nfaList.get(0);
         Set<State> allEndState = new HashSet<>();
         allEndState.add(leaderNFA.end);
-        for (int i = 1; i < nfaList.size(); i++) {
-            leaderNFA.merge(nfaList.get(i));
-            allEndState.add(nfaList.get(i).end);
+        if (nfas.size() > 1) {
+            for (int i = 1; i < nfaList.size(); i++) {
+                leaderNFA.merge(nfaList.get(i));
+                allEndState.add(nfaList.get(i).end);
+            }
         }
         DefiniteAutomation dfa = build(leaderNFA, allEndState);
         return dfa;
@@ -81,7 +83,7 @@ public class DefiniteAutomation {
                 Set<State> extendedStates = dfa.getStateExtension(entry.nfaStates, trans);
                 Set<State> epslnExtendedStates = dfa.getEpsilonClosure(extendedStates);
                 TableEntry potentialEntry = dfa.new TableEntry(epslnExtendedStates);
-                if(!epslnExtendedStates.isEmpty()){
+                if (!epslnExtendedStates.isEmpty()) {
                     int existedEntryIndex = dfa.table.indexOf(potentialEntry);
                     if (existedEntryIndex == -1) {
                         dfa.table.add(potentialEntry);

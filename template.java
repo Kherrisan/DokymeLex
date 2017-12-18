@@ -1,6 +1,7 @@
 package com.seu.cose.dokyme;
 
 import java.io.*;
+import java.lang.reflect.Method;
 import java.nio.MappedByteBuffer;
 import java.nio.channels.FileChannel;
 import java.util.ArrayList;
@@ -46,7 +47,12 @@ public class DokymeLexer {
             FileChannel inChannel = raFile.getChannel();
             inputBuffer = inChannel.map(FileChannel.MapMode.READ_ONLY, 0, raFile.length());
             parse();
+            inChannel.close();
             raFile.close();
+            if (outputWriter != null) {
+                outputWriter.close();
+            }
+            System.gc();
         } catch (Exception e) {
             e.printStackTrace();
             System.exit(1);
@@ -78,6 +84,7 @@ public class DokymeLexer {
     }
 
     private String endState(int state) {
+        if(start==end)
         if (debug) {
             System.out.println("[DEBUG] Enter end state:" + state);
         }

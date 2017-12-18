@@ -55,6 +55,13 @@ public class SourceGenerator {
             writeLineWithIndents("else {");
         }
         contextIndent++;
+        writeLineWithIndents("if(start == end) {");
+        contextIndent++;
+        writeLineWithIndents("tokenBuffer.remove(0);");
+        writeLineWithIndents("start++;");
+        writeLineWithIndents("break;");
+        contextIndent--;
+        writeLineWithIndents("}");
         writeLineWithIndents("type = endState(lastEndState);");
         writeLineWithIndents("outputToken();");
         writeLineWithIndents("if(reachEnd) {");
@@ -66,6 +73,7 @@ public class SourceGenerator {
         writeLineWithIndents("i = end - 1;");
         contextIndent--;
         writeLineWithIndents("}");
+        contextIndent--;
         writeLineWithIndents("}");
         writeLineWithIndents("break;");
         contextIndent--;

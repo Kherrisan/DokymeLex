@@ -1,13 +1,66 @@
-
+[a-zA-Z]    {letter}
+[0-9]       {digit}
+letter(letter|digit)*   {id}
+digit+      {number}
+[!@#$%^&\*\(\)_\[\]{}?\+:;,.]  {symbol}
 %%
 private int counter = 0;
 %%
-if  {return "IF";}
-while   {return "WHILE";}
-\n\r  {return "CRLF";}
+if    {incrementCounter();return "IF";}
+else  {return "ELSE";}
+while {return "WHILE";}
+for   {return "FOR";}
+switch  {return "SWITCH";}
+case  {return "CASE";}
+break {return "BREAK";}
+
+int   {return "INT";}
+float {return "FLOAT";}
+char  {return "CHAR";}
+bool  {return "BOOL";}
+void  {return "VOID";}
+
+static  {return "STATIC";}
+return {return "RETURN";}
+
+id      {return "ID";}
+number  {return "CONSTANT";}
+"(symbol|digit|letter)+"    {return "CONSTANT";}
+
+=     {return "ASN";}
+\+     {return "ADD";}
+\-     {return "SUB";}
+\*     {return "MUL";}
+/     {return "DIV";}
+%     {return "MOD";}
+>     {return "BT";}
+<     {return "ST";}
+==    {return "EQU";}
+\+=    {return "ADDA";}
+\-=    {return "SUBA";}
+\*=    {return "MULA";}
+/=    {return "DIVA";}
+%=    {return "MODA";}
+\+\+    {return "INC";}
+\-\-    {return "DEC";}
+"     {return "QUO";}
+{     {return "LBRCE";}
+}     {return "RBRCE";}
+\[     {return "LBRCKT";}
+\]     {return "RBRCKT";}
+\(     {return "LPTH";}
+\)     {return "RPTH";}
+.     {return "DOT";}
+
+\|\|    {return "OR";}
+&&    {return "AND";}
+!     {return "NOT";}
 
 %%
-public void printf(String content){
+public String parseType(){
+    //this.token是一个String类型的、代表着当前识别出来的字符串的变量。
+}
+public String printf(String content){
     System.out.println("["+this.token+"]"+content);
 }
 public void incrementCounter(){

@@ -215,12 +215,17 @@ public class NoDefiniteAutomation {
                     converting = true;
                     break;
                 default:
-                    if (converting) {
+                    if (converting && ConvertingMap.keySet().contains("\\" + cur)) {
                         stack.add(new NoDefiniteAutomation(ConvertingMap.get("\\" + cur)));
                         converting = false;
                         break;
+                    } else if (converting) {
+                        stack.add(new NoDefiniteAutomation(cur));
+                        converting = false;
+                        break;
+                    } else {
+                        stack.add(new NoDefiniteAutomation(cur));
                     }
-                    stack.add(new NoDefiniteAutomation(cur));
                     break;
             }
         }
