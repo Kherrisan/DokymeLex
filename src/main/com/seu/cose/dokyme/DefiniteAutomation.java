@@ -42,44 +42,6 @@ public class DefiniteAutomation {
         }
     }
 
-<<<<<<< HEAD
-=======
-    public class Cursor {
-        private State current;
-
-        public Cursor() {
-            current = start;
-        }
-
-        public void reset() {
-            current = start;
-        }
-
-        public boolean step(Character character) {
-            for (Transition trans : graph.getOutEdges(current)) {
-                if (trans.equals(new Transition(character))) {
-                    current = graph.getDest(trans);
-                    return true;
-                }
-            }
-            return false;
-        }
-
-        public String end() {
-            for (State state : endStates) {
-                if (current.equals(state)) {
-                    return state.tag;
-                }
-            }
-            return null;
-        }
-
-        public State current() {
-            return current;
-        }
-    }
-
->>>>>>> 940d6fa162c4415073f2533050e940dc2271d44b
     private List<TableEntry> table;
     private Set<Character> allTrans;
     private NoDefiniteAutomation nfa;

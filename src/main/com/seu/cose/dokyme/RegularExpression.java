@@ -22,7 +22,6 @@ public class RegularExpression {
     }
 
     public String re;
-<<<<<<< HEAD
     public String action;
 
     public RegularExpression(String re, String action) {
@@ -45,29 +44,6 @@ public class RegularExpression {
 //        while ((line = reFile.readline()) != null) {
 //            res.add(dokymeLexFile.parseRELine(line));
 //        }
-=======
-    public String tag;
-
-    public RegularExpression(String re, String tag) {
-        this.re = re;
-        this.tag = tag;
-    }
-
-    public static RegularExpression mock() {
-        Monitor monitor = Monitor.mock();
-        FileReader reFile = new FileReader("input.txt");
-        return monitor.parseRELine(reFile.readline());
-    }
-
-    public static List<RegularExpression> mocks() {
-        Monitor monitor = Monitor.mock();
-        List<RegularExpression> res = new ArrayList<>();
-        FileReader reFile = new FileReader("input.txt");
-        String line;
-        while ((line = reFile.readline()) != null) {
-            res.add(monitor.parseRELine(line));
-        }
->>>>>>> 940d6fa162c4415073f2533050e940dc2271d44b
         return res;
     }
 

@@ -1,10 +1,5 @@
 package com.seu.cose.dokyme;
 
-<<<<<<< HEAD
-=======
-import sun.rmi.runtime.Log;
-
->>>>>>> 940d6fa162c4415073f2533050e940dc2271d44b
 import java.io.BufferedWriter;
 import java.io.FileOutputStream;
 import java.io.IOException;
@@ -43,7 +38,6 @@ public class FileWriter {
         }
     }
 
-<<<<<<< HEAD
     public void flush() {
         try {
             if (output != null) {
@@ -54,8 +48,6 @@ public class FileWriter {
         }
     }
 
-=======
->>>>>>> 940d6fa162c4415073f2533050e940dc2271d44b
     public void close() {
         try {
             output.close();
