@@ -30,6 +30,7 @@
     letter(letter|digit)*   {id}
     digit+      {number}
     [!@#$%^&\*\(\)_\[\]{}?\+:;,.]  {symbol}
+    [ \r\n] {blank}
     %%
     private int counter = 0;
     %%
@@ -40,7 +41,7 @@
     switch  {return "SWITCH";}
     case  {return "CASE";}
     break {return "BREAK";}
-    
+    blank   {return "BLANK";}
     int   {return "INT";}
     float {return "FLOAT";}
     char  {return "CHAR";}
@@ -82,6 +83,13 @@
     \|\|    {return "OR";}
     &&    {return "AND";}
     !     {return "NOT";}
+    %%
+    private void increment(){
+        counter++;
+    }
+    public static void main(String[] args){
+        new DokymeLexer(args);
+    }
     
     %%
     private void increment(){
