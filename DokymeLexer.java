@@ -30,6 +30,8 @@ public class DokymeLexer {
     private int lastEndState;
     private int state;
     private int startState;
+    private int i;
+    private boolean reachEnd;
 
     private DokymeLexer(String[] args) {
         parseCmd(args);
@@ -66,8 +68,11 @@ public class DokymeLexer {
         lastEndState = -1;
         //START_STATE_ID
         state = startState;
-        boolean reachEnd = false;
-        for (int i = 0; i < raFile.length() + 1; i++) {
+        reachEnd = false;
+        for (i = 0; i < raFile.length() + 1; i++) {
+            if (debug) {
+                System.out.println("[DEBUG] i:" + i);
+            }
             if (i < raFile.length()) {
                 ch = inputBuffer.get(i);
             } else {
@@ -76,22 +81,27 @@ public class DokymeLexer {
             }
             tokenBuffer.add(ch);
             if (debug) {
-                System.out.println("[DEBUG] Current character:" + ch);
+                System.out.println("[DEBUG] Current character:" + new String(new byte[]{ch}) + "(" + ch + ")");
             }
             //SWITCH_BLOCK_BEGIN
         }
 
     }
 
+    //STATE_FUNCTIONS
+
     private String endState(int state) {
-        if(start==end)
-        if (debug) {
-            System.out.println("[DEBUG] Enter end state:" + state);
-        }
+        if (start != end)
+            if (debug) {
+                System.out.println("[DEBUG] Enter end state:" + state);
+            }
         //END_STATE
     }
 
     private void outputToken() throws IOException {
+        if (debug) {
+            System.out.println("[DEBUG] Output token index from " + start + " to " + end);
+        }
         Integer scode = sInnerCode.get(type);
         if (scode == null) {
             sInnerCode.put(type, 0);
@@ -100,7 +110,6 @@ public class DokymeLexer {
             sInnerCode.replace(type, scode + 1);
         }
         byte[] temp = new byte[end - start];
-        int index = 0;
         for (int i = 0; i < end - start; i++) {
             temp[i] = tokenBuffer.get(i);
         }

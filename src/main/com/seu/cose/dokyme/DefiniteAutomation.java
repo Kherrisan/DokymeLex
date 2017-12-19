@@ -88,6 +88,7 @@ public class DefiniteAutomation {
                     if (existedEntryIndex == -1) {
                         dfa.table.add(potentialEntry);
                         entry.transitions.put(trans, dfa.table.size() - 1);
+                        Logger.debug("Found new dfa state " + dfa.table.size());
                     } else {
                         entry.transitions.put(trans, existedEntryIndex);
                     }
@@ -103,13 +104,17 @@ public class DefiniteAutomation {
 
         Set<State> newEndStates = new HashSet<>();
         for (int i = 0; i < dfa.table.size(); i++) {
+            boolean isEndState = false;
             TableEntry entry = dfa.table.get(i);
             for (State nfaEndState : allEndState) {
-                if (entry.nfaStates.contains(nfaEndState)) {
+                if (entry.nfaStates.contains(nfaEndState) && (dfaStates.get(i).precedence == -1 || dfaStates.get(i).precedence > nfaEndState.precedence)) {
                     dfaStates.get(i).tag = nfaEndState.tag;
-                    newEndStates.add(dfaStates.get(i));
-                    break;
+                    dfaStates.get(i).precedence = nfaEndState.precedence;
+                    isEndState = true;
                 }
+            }
+            if (isEndState) {
+                newEndStates.add(dfaStates.get(i));
             }
             for (Transition trans : entry.transitions.keySet()) {
                 dfa.graph.addEdge(new Transition(trans.tag), dfaStates.get(i), dfaStates.get(entry.transitions.get(trans)));

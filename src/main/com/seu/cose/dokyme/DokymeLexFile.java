@@ -12,6 +12,7 @@ public class DokymeLexFile {
     private List<String> delcarations;
     private List<String> programs;
     private List<RegularExpression> rules;
+    private int precedence;
 
     public DokymeLexFile(FileReader reFile) {
         this.reFile = reFile;
@@ -19,6 +20,7 @@ public class DokymeLexFile {
         this.setDelcarations(new ArrayList<>());
         this.rules = new ArrayList<>();
         this.setPrograms(new ArrayList<>());
+        precedence = 0;
     }
 
     public Set<NoDefiniteAutomation> buildNFAs() {
@@ -94,6 +96,7 @@ public class DokymeLexFile {
             re = re.replace(def, definitions.get(def));
         }
         RegularExpression rule = new RegularExpression(re, action);
+        rule.precedence = precedence++;
         rules.add(rule);
     }
 

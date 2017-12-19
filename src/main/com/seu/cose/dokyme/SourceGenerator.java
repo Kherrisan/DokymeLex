@@ -1,6 +1,7 @@
 package com.seu.cose.dokyme;
 
 import java.util.ArrayList;
+import java.util.Set;
 
 /**
  * Created by zdksc on 2017/12/9.
@@ -18,27 +19,40 @@ public class SourceGenerator {
         this.lexFile = lexFile;
     }
 
-    private void buildSwitchBlock() {
-        writeLineWithIndents("switch (state){");
+    private void buildAllStatesFunctions() {
         for (State state : dfa.graph.getVertices()) {
-            buildCaseBlock(state);
+            buildFunction(state);
         }
-        writeLineWithIndents("}");
-        writer.flush();
     }
 
-    private void buildCaseBlock(State state) {
+    private void buildNestedSwitchBlock(Set<Transition> trans) {
+        writeLineWithIndents("switch(ch){");
         contextIndent++;
-        writeLineWithIndents("case " + state.id + ": ");
+        for (Transition tran : trans) {
+            if (tran.tag.equals('\n')) {
+                writeLineWithIndents("case 0x0d:state = " + dfa.graph.getDest(tran).id + ";break;");
+            } else if (tran.tag.equals('\r')) {
+                writeLineWithIndents("case 0x0a:state = " + dfa.graph.getDest(tran).id + ";break;");
+            } else {
+                writeLineWithIndents("case 0x0d:state = " + dfa.graph.getDest(tran).id + ";break;");
+            }
+        }
+        writeLineWithIndents("default:");
         contextIndent++;
-        writeLineWithIndents("if(debug) {");
-        contextIndent++;
-        writeLineWithIndents("System.out.println(\"[DEBUG] Enter state:\" + " + state.id + ");");
+        writeLineWithIndents("if(start == end) {tokenBuffer.remove(0);start++;return;}");
+        writeLineWithIndents("type = endState(lastEndState);outputToken();");
+        writeLineWithIndents("if(reachEnd) {i = end;} else {i = end - 1;}");
+        contextIndent--;
         contextIndent--;
         writeLineWithIndents("}");
+    }
+
+    private void buildFunction(State state) {
+        writeLineWithIndents("private void stateFunction_" + state.id + "(byte ch) throws IOException {");
+        contextIndent++;
+        writeLineWithIndents("if(debug) {System.out.println(\"[DEBUG] Enter state:\" + " + state.id + ");}");
         if (dfa.endStates.contains(state)) {
-            writeLineWithIndents("end = i;");
-            writeLineWithIndents("lastEndState = " + state.id + ";");
+            writeLineWithIndents("end = i;lastEndState = " + state.id + ";");
         }
         boolean firstIf = true;
         for (Transition trans : dfa.graph.getOutEdges(state)) {
@@ -55,26 +69,29 @@ public class SourceGenerator {
             writeLineWithIndents("else {");
         }
         contextIndent++;
-        writeLineWithIndents("if(start == end) {");
-        contextIndent++;
-        writeLineWithIndents("tokenBuffer.remove(0);");
-        writeLineWithIndents("start++;");
-        writeLineWithIndents("break;");
-        contextIndent--;
-        writeLineWithIndents("}");
-        writeLineWithIndents("type = endState(lastEndState);");
-        writeLineWithIndents("outputToken();");
-        writeLineWithIndents("if(reachEnd) {");
-        contextIndent++;
-        writeLineWithIndents("i = end;");
-        contextIndent--;
-        writeLineWithIndents("} else {");
-        contextIndent++;
-        writeLineWithIndents("i = end - 1;");
-        contextIndent--;
+        writeLineWithIndents("if(start == end) {tokenBuffer.remove(0);start++;return;}");
+        writeLineWithIndents("type = endState(lastEndState);outputToken();");
+        writeLineWithIndents("if(reachEnd) {i = end;} else {i = end - 1;}");
         writeLineWithIndents("}");
         contextIndent--;
+        contextIndent--;
         writeLineWithIndents("}");
+    }
+
+    private void buildSwitchBlock() {
+        writeLineWithIndents("switch (state){");
+        for (State state : dfa.graph.getVertices()) {
+            buildCaseBlock(state);
+        }
+        writeLineWithIndents("}");
+        writer.flush();
+    }
+
+    private void buildCaseBlock(State state) {
+        contextIndent++;
+        writeLineWithIndents("case " + state.id + ": ");
+        contextIndent++;
+        writeLineWithIndents("stateFunction_" + state.id + "(ch);");
         writeLineWithIndents("break;");
         contextIndent--;
         contextIndent--;
@@ -88,16 +105,12 @@ public class SourceGenerator {
             elseIf = "";
         }
         if (trans.tag.equals('\n')) {
-            writeLineWithIndents(elseIf + "if(ch==0x0d) {");
+            writeLineWithIndents(elseIf + "if(ch==0x0d) {state = " + dfa.graph.getDest(trans).id + ";}");
         } else if (trans.tag.equals('\r')) {
-            writeLineWithIndents(elseIf + "if(ch==0x0a) {");
+            writeLineWithIndents(elseIf + "if(ch==0x0a) {state = " + dfa.graph.getDest(trans).id + ";}");
         } else {
-            writeLineWithIndents(elseIf + "if(ch=='" + trans.tag + "') {");
+            writeLineWithIndents(elseIf + "if(ch=='" + trans.tag + "') {state = " + dfa.graph.getDest(trans).id + ";}");
         }
-        contextIndent++;
-        writeLineWithIndents("state = " + dfa.graph.getDest(trans).id + ";");
-        contextIndent--;
-        writeLineWithIndents("}");
     }
 
     private void buildStartState() {
@@ -137,7 +150,7 @@ public class SourceGenerator {
      */
     public void dokymeFile() {
         try {
-            reader = new FileReader("template.java");
+            reader = new FileReader("./DokymeLexer.java");
             String line;
             while ((line = reader.readline()) != null) {
                 if (line.contains("//DECLARATIONS")) {
@@ -155,6 +168,9 @@ public class SourceGenerator {
                 } else if (line.contains("//END_STATE")) {
                     adjustIndents(line);
                     buildEndStates();
+                } else if (line.contains("//STATE_FUNCTIONS")) {
+                    adjustIndents(line);
+                    buildAllStatesFunctions();
                 } else {
                     //如果没有模板标记字符串，直接写入输出文件中。
                     writeLine(line);

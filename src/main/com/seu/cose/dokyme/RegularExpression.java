@@ -23,10 +23,12 @@ public class RegularExpression {
 
     public String re;
     public String action;
+    public int precedence;
 
     public RegularExpression(String re, String action) {
         this.re = re;
         this.action = action;
+        precedence = -1;
     }
 
     public static RegularExpression mock() {

@@ -14,6 +14,7 @@ public class State {
 
     public int id;
     public String tag;
+    public int precedence;
 
     @Override
     public int hashCode() {
@@ -45,6 +46,7 @@ public class State {
     public State(String tag) {
         id = sid++;
         this.tag = tag;
+        precedence = -1;
     }
 
     @Override

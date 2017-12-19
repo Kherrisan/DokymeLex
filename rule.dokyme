@@ -1,7 +1,8 @@
-[a-zA-Z]    {letter}
+[a-z]    {letter}
 [0-9]       {digit}
 letter(letter|digit)*   {id}
 digit+      {number}
+[ \r\n] {blank}
 [!@#$%^&\*\(\)_\[\]{}?\+:;,.]  {symbol}
 %%
 private int counter = 0;
@@ -20,12 +21,16 @@ char  {return "CHAR";}
 bool  {return "BOOL";}
 void  {return "VOID";}
 
+blank   {return "BLANK";}
+
 static  {return "STATIC";}
 return {return "RETURN";}
 
 id      {return "ID";}
 number  {return "CONSTANT";}
 "(symbol|digit|letter)+"    {return "CONSTANT";}
+
+\r\n    {return "CRLF";}
 
 =     {return "ASN";}
 \+     {return "ADD";}
@@ -57,12 +62,6 @@ number  {return "CONSTANT";}
 !     {return "NOT";}
 
 %%
-public String parseType(){
-    //this.token是一个String类型的、代表着当前识别出来的字符串的变量。
-}
-public String printf(String content){
-    System.out.println("["+this.token+"]"+content);
-}
 public void incrementCounter(){
     this.counter++;
 }

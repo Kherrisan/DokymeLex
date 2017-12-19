@@ -8,7 +8,7 @@ public class Main {
 
     public static void main(String[] args) {
         FileReader dokymeFile = new FileReader("rule.dokyme");
-        FileWriter generate = new FileWriter("./com/seu/cose/dokyme/DokymeLexer.java");
+        FileWriter generate = new FileWriter("./src/main/com/seu/cose/dokyme/DokymeLexer.java");
         DokymeLexFile lexFile = new DokymeLexFile(dokymeFile);
         Set<NoDefiniteAutomation> nfas = lexFile.parseDokymeFile().buildNFAs();
         DefiniteAutomation dfa = DefiniteAutomation.build(nfas);

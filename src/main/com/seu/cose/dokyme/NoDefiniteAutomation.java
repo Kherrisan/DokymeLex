@@ -28,11 +28,14 @@ public class NoDefiniteAutomation {
     public State start;
     public State end;
     public RegularExpression re;
+    public int precendence;
 
     public NoDefiniteAutomation() {
+
     }
 
     public NoDefiniteAutomation(char trans) {
+        precendence = -1;
         start = new State();
         State ml = new State();
         State mr = new State();
@@ -238,6 +241,7 @@ public class NoDefiniteAutomation {
             nfa.end.tag = re.action;
         }
         nfa.re = re;
+        nfa.end.precedence = re.precedence;
         return nfa;
     }
 
