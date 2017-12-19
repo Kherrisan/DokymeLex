@@ -1,27 +1,25 @@
-[a-z]    {letter}
+[a-zA-Z]    {letter}
 [0-9]       {digit}
 letter(letter|digit)*   {id}
 digit+      {number}
-[ \r\n] {blank}
 [!@#$%^&\*\(\)_\[\]{}?\+:;,.]  {symbol}
+[ \r\n] {blank}
 %%
 private int counter = 0;
 %%
-if    {incrementCounter();return "IF";}
+if    {increment();return "IF";}
 else  {return "ELSE";}
 while {return "WHILE";}
 for   {return "FOR";}
 switch  {return "SWITCH";}
 case  {return "CASE";}
 break {return "BREAK";}
-
+blank   {return "BLANK";}
 int   {return "INT";}
 float {return "FLOAT";}
 char  {return "CHAR";}
 bool  {return "BOOL";}
 void  {return "VOID";}
-
-blank   {return "BLANK";}
 
 static  {return "STATIC";}
 return {return "RETURN";}
@@ -29,8 +27,6 @@ return {return "RETURN";}
 id      {return "ID";}
 number  {return "CONSTANT";}
 "(symbol|digit|letter)+"    {return "CONSTANT";}
-
-\r\n    {return "CRLF";}
 
 =     {return "ASN";}
 \+     {return "ADD";}
@@ -60,11 +56,10 @@ number  {return "CONSTANT";}
 \|\|    {return "OR";}
 &&    {return "AND";}
 !     {return "NOT";}
-
 %%
-public void incrementCounter(){
-    this.counter++;
+private void increment(){
+    counter++;
 }
-public static void main(String[] args) {
+public static void main(String[] args){
     new DokymeLexer(args);
 }

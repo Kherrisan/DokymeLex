@@ -1,6 +1,7 @@
 package com.seu.cose.dokyme;
 
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.Set;
 
 /**
@@ -25,7 +26,7 @@ public class SourceGenerator {
         }
     }
 
-    private void buildNestedSwitchBlock(Set<Transition> trans) {
+    private void buildNestedSwitchBlock(Collection<Transition> trans) {
         writeLineWithIndents("switch(ch){");
         contextIndent++;
         for (Transition tran : trans) {
@@ -34,14 +35,12 @@ public class SourceGenerator {
             } else if (tran.tag.equals('\r')) {
                 writeLineWithIndents("case 0x0a:state = " + dfa.graph.getDest(tran).id + ";break;");
             } else {
-                writeLineWithIndents("case 0x0d:state = " + dfa.graph.getDest(tran).id + ";break;");
+                writeLineWithIndents("case '" + tran.tag + "':state = " + dfa.graph.getDest(tran).id + ";break;");
             }
         }
         writeLineWithIndents("default:");
         contextIndent++;
-        writeLineWithIndents("if(start == end) {tokenBuffer.remove(0);start++;return;}");
-        writeLineWithIndents("type = endState(lastEndState);outputToken();");
-        writeLineWithIndents("if(reachEnd) {i = end;} else {i = end - 1;}");
+        writeLineWithIndents("handlePotentialOutput();");
         contextIndent--;
         contextIndent--;
         writeLineWithIndents("}");
@@ -54,26 +53,7 @@ public class SourceGenerator {
         if (dfa.endStates.contains(state)) {
             writeLineWithIndents("end = i;lastEndState = " + state.id + ";");
         }
-        boolean firstIf = true;
-        for (Transition trans : dfa.graph.getOutEdges(state)) {
-            if (firstIf) {
-                buildIfBlock(trans, false);
-                firstIf = false;
-            } else {
-                buildIfBlock(trans, true);
-            }
-        }
-        if (dfa.graph.getOutEdges(state).isEmpty()) {
-            writeLineWithIndents("{");
-        } else {
-            writeLineWithIndents("else {");
-        }
-        contextIndent++;
-        writeLineWithIndents("if(start == end) {tokenBuffer.remove(0);start++;return;}");
-        writeLineWithIndents("type = endState(lastEndState);outputToken();");
-        writeLineWithIndents("if(reachEnd) {i = end;} else {i = end - 1;}");
-        writeLineWithIndents("}");
-        contextIndent--;
+        buildNestedSwitchBlock(dfa.graph.getOutEdges(state));
         contextIndent--;
         writeLineWithIndents("}");
     }
@@ -95,22 +75,6 @@ public class SourceGenerator {
         writeLineWithIndents("break;");
         contextIndent--;
         contextIndent--;
-    }
-
-    private void buildIfBlock(Transition trans, boolean uElse) {
-        String elseIf;
-        if (uElse) {
-            elseIf = "else ";
-        } else {
-            elseIf = "";
-        }
-        if (trans.tag.equals('\n')) {
-            writeLineWithIndents(elseIf + "if(ch==0x0d) {state = " + dfa.graph.getDest(trans).id + ";}");
-        } else if (trans.tag.equals('\r')) {
-            writeLineWithIndents(elseIf + "if(ch==0x0a) {state = " + dfa.graph.getDest(trans).id + ";}");
-        } else {
-            writeLineWithIndents(elseIf + "if(ch=='" + trans.tag + "') {state = " + dfa.graph.getDest(trans).id + ";}");
-        }
     }
 
     private void buildStartState() {
@@ -139,10 +103,14 @@ public class SourceGenerator {
      *
      */
     private void buildEndStates() {
+        writeLineWithIndents("switch(state){");
+        contextIndent++;
         for (State end : dfa.endStates) {
-            writeLineWithIndents("if(state==" + end.id + "){" + end.tag + "}");
+            writeLineWithIndents("case " + end.id + ":" + end.tag);
         }
-        writeLineWithIndents("return \"NULL\";");
+        writeLineWithIndents("default:return \"NULL\";");
+        contextIndent--;
+        writeLineWithIndents("}");
     }
 
     /**

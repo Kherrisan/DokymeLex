@@ -33,7 +33,7 @@
     %%
     private int counter = 0;
     %%
-    if    {incrementCounter();return "IF";}
+    if    {increment();return "IF";}
     else  {return "ELSE";}
     while {return "WHILE";}
     for   {return "FOR";}
@@ -69,7 +69,7 @@
     /=    {return "DIVA";}
     %=    {return "MODA";}
     \+\+    {return "INC";}
-    \-\-    {return "DEC";}   
+    \-\-    {return "DEC";}
     "     {return "QUO";}
     {     {return "LBRCE";}
     }     {return "RBRCE";}
@@ -79,21 +79,12 @@
     \)     {return "RPTH";}
     .     {return "DOT";}
     
-    ||    {return "OR";}
+    \|\|    {return "OR";}
     &&    {return "AND";}
     !     {return "NOT";}
     
     %%
-    public String parseType(){
-        //this.token是一个String类型的、代表着当前识别出来的字符串的变量。
-    }
-    public String printf(String content){
-        System.out.println("["+this.token+"]"+content);
-    }
-    public void incrementCounter(){
-        this.counter++;
-    }
-    public static void main(String[] args){
-        dokyme(); //开始运行分析器。
+    private void increment(){
+       counter++;
     }
     

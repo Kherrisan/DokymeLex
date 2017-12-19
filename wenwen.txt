@@ -1,4 +1,14 @@
-int i=1
-while(i<=5){
-    i++;
+int main(){
+    int a=1
+    int b=1
+    int result
+    int i=0
+    int n=100
+    while(i<n){
+        result=a+b
+        a=b
+        b=result
+        i++
+    }
+    return result
 }

@@ -17,6 +17,7 @@ public class DokymeLexer {
     private String input;
     private String output;
     private boolean debug = false;
+    private boolean skipBlank = false;
     private BufferedWriter outputWriter;
     private RandomAccessFile raFile;
     private Map<String, Integer> sInnerCode;
@@ -90,6 +91,22 @@ public class DokymeLexer {
 
     //STATE_FUNCTIONS
 
+    private void handlePotentialOutput() throws IOException {
+        if (start == end) {
+            type = "NULL";
+            end = i;
+            outputToken();
+            return;
+        }
+        type = endState(lastEndState);
+        outputToken();
+        if (reachEnd) {
+            i = end;
+        } else {
+            i = end - 1;
+        }
+    }
+
     private String endState(int state) {
         if (start != end)
             if (debug) {
@@ -115,12 +132,15 @@ public class DokymeLexer {
         }
         tokenBuffer.clear();
         token = new String(temp);
+        state = startState;
+        start = end;
+        if (type.equals("BLANK") && skipBlank) {
+            return;
+        }
         System.out.println("(" + token + "," + type + "," + scode + ")");
         if (outputWriter != null) {
             outputWriter.write("(" + token + "," + type + "," + scode + ")\n");
         }
-        state = startState;
-        start = end;
     }
 
     private void parseCmd(String[] args) {
@@ -137,8 +157,10 @@ public class DokymeLexer {
         for (String arg : args) {
             if (arg.equals("-o")) {
                 lastOne = 1;
+            } else if (arg.equals("-s")) {
+                skipBlank = true;
             } else if (arg.equals("-h")) {
-                System.out.print("Dokyme lexical parser source generator.\nUsage: dokyme.exe [options] <inputFilePath>\n\nOptions:\n\t-o\t<filePath>\n\t\tThe path which the output token file will be generated.\n\t\tNote:If unspecified,the token will only be printed in the console window.\n\t-h\tShow this help document.\n\t-v\tShow version information.\n\t-d\tShow debug output.\n");
+                System.out.print("Dokyme lexical parser source generator.\nUsage: dokyme.exe [options] <inputFilePath>\n\nOptions:\n\t-s\n\t\tSkip blank character like \\r,\\n,etc\n\t-o\t<filePath>\n\t\tThe path which the output token file will be generated.\n\t\tNote:If unspecified,the token will only be printed in the console window.\n\t-h\tShow this help document.\n\t-v\tShow version information.\n\t-d\tShow debug output.\n");
                 System.exit(0);
             } else if (arg.equals("-v")) {
                 System.out.print("Dokyme lexical parser source generator.\nHello World from Southease University Software Academy.\n2017.12.18");

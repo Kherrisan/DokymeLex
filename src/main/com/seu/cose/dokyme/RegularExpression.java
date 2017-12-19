@@ -32,20 +32,12 @@ public class RegularExpression {
     }
 
     public static RegularExpression mock() {
-//        DokymeLexFile monitor = DokymeLexFile.mock();
-//        FileReader reFile = new FileReader("input.txt");
-//        return monitor.parseRELine(reFile.readline());
         return null;
     }
 
     public static List<RegularExpression> mocks() {
         DokymeLexFile dokymeLexFile = DokymeLexFile.mock();
         List<RegularExpression> res = new ArrayList<>();
-//        FileReader reFile = new FileReader("input.txt");
-//        String line;
-//        while ((line = reFile.readline()) != null) {
-//            res.add(dokymeLexFile.parseRELine(line));
-//        }
         return res;
     }
 

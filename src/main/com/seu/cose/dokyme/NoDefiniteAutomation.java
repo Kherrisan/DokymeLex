@@ -61,7 +61,7 @@ public class NoDefiniteAutomation {
     public Set<Character> getAllTransitionTag() {
         Set<Character> charset = new HashSet<>();
         for (Transition trans : graph.getEdges()) {
-            if (!RegularExpression.operators.containsKey(trans.tag)) {
+            if (!trans.tag.equals('~')) {
                 charset.add(trans.tag);
             }
         }
@@ -364,7 +364,9 @@ public class NoDefiniteAutomation {
                     break;
             }
         }
-        return new RegularExpression(result, re.action);
+        RegularExpression newRe = new RegularExpression(result, re.action);
+        newRe.precedence = re.precedence;
+        return newRe;
     }
 
     /**
@@ -461,7 +463,9 @@ public class NoDefiniteAutomation {
         for (Character c : temp.toArray(new Character[]{})) {
             result += c;
         }
-        return new RegularExpression(result, re.action);
+        RegularExpression newRe = new RegularExpression(result, re.action);
+        newRe.precedence = re.precedence;
+        return newRe;
     }
 
     public static NoDefiniteAutomation mock() {

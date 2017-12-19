@@ -39,8 +39,8 @@ public class State {
     }
 
     public State() {
-        id = sid++;
-        this.tag = "" + id;
+        this("" + sid);
+        sid++;
     }
 
     public State(String tag) {
