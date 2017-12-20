@@ -19,7 +19,7 @@ Lex can generate analyzers in either C or Ratfor, a language which can be transl
 2. 在某个文件夹下创建一个lex文件，并在其中写一些东西，具体怎么写参照[.lex文件结构](#lexFormat)。
     假设路径为 'C:\dokyme.lex'。
 3. 在console中运行DokymeLex_{i386或x64}.exe（以下简称DokymeLex.exe）,注意要带有参数 -l（是小写L不是1不是i）。可以使用参数 -h 查看所有参数。
-    `./DokymeLex.exe -l C:\dokyme.lex`
+    `.\DokymeLex.exe -l C:\dokyme.lex`
 4. 程序会自动读取lex文件中的声明、正规定义、函数定义，并生成可执行的、仅包含有一个类的.java源程序文件。
     默认生成文件名为 DokymeLex.java，默认路径为应用程序所在路径，如果想要自定义请直接使用 -h 参数查阅需要的参数。
     **注：请自觉将文件名命名为DokymeLexer.java文件，否则文件名和主类名不匹配，javac没办法编译的。**

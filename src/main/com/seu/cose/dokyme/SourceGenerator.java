@@ -120,7 +120,7 @@ public class SourceGenerator {
      */
     public void dokymeFile() {
         try {
-            reader = new FileReader("./DokymeLexer.java");
+            reader = new FileReader("./template.java");
             String line;
             while ((line = reader.readline()) != null) {
                 if (line.contains("//DECLARATIONS")) {

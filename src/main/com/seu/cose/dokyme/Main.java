@@ -42,7 +42,7 @@ public class Main {
             if (cmd.hasOption("o")) {
                 generatedFilePath = cmd.getOptionValue("o");
             } else {
-                generatedFilePath = "DokymeLex.java";
+                generatedFilePath = "DokymeLexer.java";
             }
             if (cmd.hasOption("p")) {
                 packageInfo = cmd.getOptionValue("p");
