@@ -1,8 +1,6 @@
 package com.seu.cose.dokyme;
 
-import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.List;
 
 /**
  * Created by zdksc on 2017/12/7.
@@ -31,17 +29,4 @@ public class RegularExpression {
         precedence = -1;
     }
 
-    public static RegularExpression mock() {
-        return null;
-    }
-
-    public static List<RegularExpression> mocks() {
-        DokymeLexFile dokymeLexFile = DokymeLexFile.mock();
-        List<RegularExpression> res = new ArrayList<>();
-        return res;
-    }
-
-    public static void main(String[] args) {
-
-    }
 }

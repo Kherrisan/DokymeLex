@@ -117,14 +117,6 @@ public class DokymeLexFile {
         definitions.put(tag, re);
     }
 
-    public static DokymeLexFile mock() {
-        return null;
-    }
-
-    public static void main(String[] args) {
-        mock().parseDokymeFile().buildNFAs();
-    }
-
     public List<String> getDelcarations() {
         return delcarations;
     }

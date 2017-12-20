@@ -1,8 +1,6 @@
 package com.seu.cose.dokyme;
 
-import java.util.ArrayList;
 import java.util.Collection;
-import java.util.Set;
 
 /**
  * Created by zdksc on 2017/12/9.
@@ -113,6 +111,10 @@ public class SourceGenerator {
         writeLineWithIndents("}");
     }
 
+    private void buildPackageInfo() {
+        writeLine("package " + Main.packageInfo + ";");
+    }
+
     /**
      *
      */
@@ -139,6 +141,8 @@ public class SourceGenerator {
                 } else if (line.contains("//STATE_FUNCTIONS")) {
                     adjustIndents(line);
                     buildAllStatesFunctions();
+                } else if (line.contains("//PACKAGE_INFO")) {
+                    buildPackageInfo();
                 } else {
                     //如果没有模板标记字符串，直接写入输出文件中。
                     writeLine(line);

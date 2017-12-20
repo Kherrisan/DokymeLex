@@ -171,20 +171,4 @@ public class DefiniteAutomation {
             }
         }
     }
-
-    public static DefiniteAutomation mock() {
-        Set<NoDefiniteAutomation> nfas = new HashSet<>();
-        nfas.add(NoDefiniteAutomation.mock());
-        return build(nfas);
-    }
-
-    public static DefiniteAutomation mock(boolean multiNFA) {
-        Set<NoDefiniteAutomation> nfas = new HashSet<>();
-        nfas.addAll(NoDefiniteAutomation.mocks());
-        return build(nfas);
-    }
-
-    public static void main(String[] args) {
-        VisualFrame visualFrame = new VisualFrame(mock(true).graph);
-    }
 }

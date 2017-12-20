@@ -1,7 +1,5 @@
-package com.seu.cose.dokyme;
+package //PACKAGE_INFO
 
-import java.io.*;
-import java.lang.reflect.Method;
 import java.nio.MappedByteBuffer;
 import java.nio.channels.FileChannel;
 import java.util.ArrayList;

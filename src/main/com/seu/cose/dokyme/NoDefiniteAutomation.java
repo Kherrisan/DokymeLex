@@ -6,7 +6,6 @@ import edu.uci.ics.jung.graph.DirectedSparseMultigraph;
 import edu.uci.ics.jung.graph.util.EdgeType;
 
 import java.util.*;
-import java.util.List;
 
 /**
  * Created by zdksc on 2017/12/7.
@@ -466,23 +465,5 @@ public class NoDefiniteAutomation {
         RegularExpression newRe = new RegularExpression(result, re.action);
         newRe.precedence = re.precedence;
         return newRe;
-    }
-
-    public static NoDefiniteAutomation mock() {
-        return build(RegularExpression.mock());
-    }
-
-    public static List<NoDefiniteAutomation> mocks() {
-        List<NoDefiniteAutomation> nfas = new ArrayList<>();
-        List<RegularExpression> res = RegularExpression.mocks();
-        for (RegularExpression re : res) {
-            nfas.add(build(re));
-        }
-        return nfas;
-    }
-
-    public static void main(String[] args) {
-        NoDefiniteAutomation nfa = new NoDefiniteAutomation();
-        NoDefiniteAutomation.mocks();
     }
 }

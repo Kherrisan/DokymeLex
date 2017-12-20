@@ -12,7 +12,6 @@ public class Logger {
     private static SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
 
     /**
-     *
      * @param newFormat contains keywords including level,time,filename,linenum,content.
      */
     public static void setFormat(String newFormat) {
@@ -32,16 +31,18 @@ public class Logger {
     }
 
     private static void output(String level, String content) {
-        String time = dateFormat.format(new Date());
-        String filename = getFilename();
-        String linenum = "" + getLineInfo();
-        System.out.println(
-                format.replace("level", level)
-                        .replace("time", time)
-                        .replace("filename", filename)
-                        .replace("linenum", linenum)
-                        .replace("content", content)
-        );
+        if (Main.debug) {
+            String time = dateFormat.format(new Date());
+            String filename = getFilename();
+            String linenum = "" + getLineInfo();
+            System.out.println(
+                    format.replace("level", level)
+                            .replace("time", time)
+                            .replace("filename", filename)
+                            .replace("linenum", linenum)
+                            .replace("content", content)
+            );
+        }
     }
 
     private static String getFilename() {

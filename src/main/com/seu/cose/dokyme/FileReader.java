@@ -1,6 +1,9 @@
 package com.seu.cose.dokyme;
 
-import java.io.*;
+import java.io.BufferedReader;
+import java.io.FileInputStream;
+import java.io.IOException;
+import java.io.InputStreamReader;
 
 /**
  * Created by zdksc on 2017/12/6.
