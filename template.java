@@ -1,5 +1,6 @@
 package //PACKAGE_INFO
 
+import java.io.*;
 import java.nio.MappedByteBuffer;
 import java.nio.channels.FileChannel;
 import java.util.ArrayList;
@@ -142,11 +143,6 @@ public class DokymeLexer {
     }
 
     private void parseCmd(String[] args) {
-        //解析命令行参数
-        //-o 输出文件路径 1
-        //-h 帮助 2
-        //-v 版本 3
-        //-d 显示调试输出 4
         int lastOne = -1;
         if (args.length == 0) {
             System.out.println("Wrong command paramaters.\nTry -h to get help.\n");

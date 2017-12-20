@@ -47,7 +47,7 @@ public class Main {
             if (cmd.hasOption("p")) {
                 packageInfo = cmd.getOptionValue("p");
             } else {
-                packageInfo = "default";
+                packageInfo = "com";
             }
             debug = cmd.hasOption("d");
         } catch (ParseException e) {

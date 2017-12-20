@@ -24,10 +24,10 @@ Lex can generate analyzers in either C or Ratfor, a language which can be transl
     默认生成文件名为 DokymeLex.java，默认路径为应用程序所在路径，如果想要自定义请直接使用 -h 参数查阅需要的参数。
     **注：请自觉将文件名命名为DokymeLexer.java文件，否则文件名和主类名不匹配，javac没办法编译的。**
     **程序运行所需的时间取决于lex文件的复杂度，再加上我比较菜，所以请不要写太过复杂的lex，比如ANSI C这样的lex定义。**
-5. 生成的java源文件中默认的包名为default。因此不需要额外的目录结构支持。在源文件同目录下编译之。
-    `javac DokymeLexer.java`
+5. 生成的java源文件中默认的包名为com。因此请新建一个com文件夹，把生成的.java文件放到com文件夹下。当然你也可以自己修改包名，并让包名和目录结构匹配。
+    `javac com/DokymeLexer.java`
 6. 然后运行生成的.class文件，注意同样需要一些参数，同样可以使用 -h 查看帮助文档。假设需要做词法分析的文件为wenwen.txt（实际情况下，一般都是对某种语言的源文件进行词法分析，比如.c、.java、.py这样的，这里就以txt为例了）。
-    `java DokymeLexer wenwen.txt`
+    `java com.DokymeLexer wenwen.txt`
 7. 程序会打印分析出的token序列。至此结束。
 
 ## .lex文件结构
@@ -54,6 +54,8 @@ Lex can generate analyzers in either C or Ratfor, a language which can be transl
 主程序代码。代码段中包含的函数都将直接复制带词法分析器主类的定义中。
 
 ### 示例如下:
+
+[示例.lex文件](https://github.com/Dokyme/DokymeLex/blob/master/rule.dokyme)
     
     [a-zA-Z]    {letter}
     [0-9]       {digit}
