@@ -92,8 +92,8 @@ public class DokymeLexer {
 
     private void handlePotentialOutput() throws IOException {
         if (start == end) {
-            type = "NULL";
-            end = i;
+            type = "UNDEFINED";
+            end = i + 1;
             outputToken();
             return;
         }
@@ -123,7 +123,8 @@ public class DokymeLexer {
             sInnerCode.put(type, 0);
             scode = 0;
         } else {
-            sInnerCode.replace(type, scode + 1);
+            sInnerCode.put(type, scode + 1);
+            scode++;
         }
         byte[] temp = new byte[end - start];
         for (int i = 0; i < end - start; i++) {
