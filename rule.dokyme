@@ -1,69 +1,3 @@
-<<<<<<< HEAD
-[a-zA-Z]    {letter}
-[0-9]       {digit}
-letter(letter|digit)*   {id}
-digit+      {number}
-[!@#$%^&\*\(\)_\[\]{}?\+:;,.]  {symbol}
-[ \r\n] {blank}
-%%
-private int counter = 0;
-%%
-if    {increment();return "IF";}
-else  {return "ELSE";}
-while {return "WHILE";}
-for   {return "FOR";}
-switch  {return "SWITCH";}
-case  {return "CASE";}
-break {return "BREAK";}
-blank   {return "BLANK";}
-int   {return "INT";}
-float {return "FLOAT";}
-char  {return "CHAR";}
-bool  {return "BOOL";}
-void  {return "VOID";}
-
-static  {return "STATIC";}
-return {return "RETURN";}
-
-id      {return "ID";}
-number  {return "CONSTANT";}
-"(symbol|digit|letter)+"    {return "CONSTANT";}
-
-=     {return "ASN";}
-\+     {return "ADD";}
-\-     {return "SUB";}
-\*     {return "MUL";}
-/     {return "DIV";}
-%     {return "MOD";}
->     {return "BT";}
-<     {return "ST";}
-==    {return "EQU";}
-\+=    {return "ADDA";}
-\-=    {return "SUBA";}
-\*=    {return "MULA";}
-/=    {return "DIVA";}
-%=    {return "MODA";}
-\+\+    {return "INC";}
-\-\-    {return "DEC";}
-"     {return "QUO";}
-{     {return "LBRCE";}
-}     {return "RBRCE";}
-\[     {return "LBRCKT";}
-\]     {return "RBRCKT";}
-\(     {return "LPTH";}
-\)     {return "RPTH";}
-.     {return "DOT";}
-
-\|\|    {return "OR";}
-&&    {return "AND";}
-!     {return "NOT";}
-%%
-private void increment(){
-    counter++;
-}
-public static void main(String[] args){
-    new DokymeLexer(args);
-=======
 [0-9]       {digit}
 letter(letter|digit)*   {id}
 digit+      {number}
@@ -95,5 +29,4 @@ private void increment(){
 }
 public static void main(String[] args){
     new DokymeLexer(args);
->>>>>>> Em
 }
