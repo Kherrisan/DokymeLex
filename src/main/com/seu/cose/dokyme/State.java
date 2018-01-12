@@ -4,7 +4,11 @@ package com.seu.cose.dokyme;
 /**
  * Created by zdksc on 2017/12/7.
  */
+<<<<<<< HEAD
 public class State {
+=======
+public class State implements Comparable {
+>>>>>>> Em
 
     public static void resetId() {
         sid = 0;
@@ -15,6 +19,20 @@ public class State {
     public int id;
     public String tag;
     public int precedence;
+<<<<<<< HEAD
+=======
+
+    @Override
+    public int compareTo(Object o) {
+        if (((State) o).id > id) {
+            return 1;
+        } else if (((State) o).id == id) {
+            return 0;
+        } else {
+            return -1;
+        }
+    }
+>>>>>>> Em
 
     @Override
     public int hashCode() {

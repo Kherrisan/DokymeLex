@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 package com.seu.cose.dokyme;
 
 public class DokymeFileFormatException extends Exception {
@@ -5,3 +6,12 @@ public class DokymeFileFormatException extends Exception {
         super();
     }
 }
+=======
+package com.seu.cose.dokyme;
+
+public class DokymeFileFormatException extends Exception {
+    public DokymeFileFormatException() {
+        super();
+    }
+}
+>>>>>>> Em

@@ -71,7 +71,7 @@ public class DefiniteAutomation {
         dfa.nfa = nfa;
         dfa.table = new ArrayList<>();
         dfa.graph = new DirectedSparseMultigraph<>();
-        Set<State> stateSet = new HashSet<>();
+        Set<State> stateSet = new TreeSet<>();
         stateSet.add(nfa.start);
         stateSet = dfa.getEpsilonClosure(stateSet);
         dfa.table.add(dfa.new TableEntry(stateSet));

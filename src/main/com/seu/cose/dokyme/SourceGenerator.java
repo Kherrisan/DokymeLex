@@ -1,12 +1,21 @@
 package com.seu.cose.dokyme;
 
+<<<<<<< HEAD
+=======
+import java.io.BufferedReader;
+import java.io.InputStreamReader;
+>>>>>>> Em
 import java.util.Collection;
 
 /**
  * Created by zdksc on 2017/12/9.
  */
 public class SourceGenerator {
+<<<<<<< HEAD
     private FileReader reader;
+=======
+    private BufferedReader reader;
+>>>>>>> Em
     private FileWriter writer;
     private DefiniteAutomation dfa;
     private int contextIndent;
@@ -120,9 +129,16 @@ public class SourceGenerator {
      */
     public void dokymeFile() {
         try {
+<<<<<<< HEAD
             reader = new FileReader("./template.java");
             String line;
             while ((line = reader.readline()) != null) {
+=======
+            InputStreamReader inputStreamReader = new InputStreamReader(getClass().getResourceAsStream("/template.java"));
+            reader = new BufferedReader(inputStreamReader);
+            String line;
+            while ((line = reader.readLine()) != null) {
+>>>>>>> Em
                 if (line.contains("//DECLARATIONS")) {
                     adjustIndents(line);
                     buildDeclarations();
@@ -148,7 +164,11 @@ public class SourceGenerator {
                     writeLine(line);
                 }
             }
+<<<<<<< HEAD
             reader.release();
+=======
+            reader.close();
+>>>>>>> Em
             writer.flush();
             writer.close();
         } catch (Exception e) {

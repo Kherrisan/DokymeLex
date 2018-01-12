@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 [a-zA-Z]    {letter}
 [0-9]       {digit}
 letter(letter|digit)*   {id}
@@ -62,4 +63,37 @@ private void increment(){
 }
 public static void main(String[] args){
     new DokymeLexer(args);
+=======
+[0-9]       {digit}
+letter(letter|digit)*   {id}
+digit+      {number}
+[ \r\n] {blank}
+%%
+private int counter = 0;
+%%
+id      {return "ID";}
+number  {return "CONSTANT";}
+
+=     {return "ASN";}
+\+     {return "ADD";}
+\-     {return "SUB";}
+\*     {return "MUL";}
+/     {return "DIV";}
+%     {return "MOD";}
+\+=    {return "ADDA";}
+\-=    {return "SUBA";}
+\*=    {return "MULA";}
+/=    {return "DIVA";}
+%=    {return "MODA";}
+\+\+    {return "INC";}
+\-\-    {return "DEC";}
+;   {return "SEMI";}
+
+%%
+private void increment(){
+    counter++;
+}
+public static void main(String[] args){
+    new DokymeLexer(args);
+>>>>>>> Em
 }
