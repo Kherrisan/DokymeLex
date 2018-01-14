@@ -1,0 +1,11 @@
+<component name="libraryTable">
+  <library name="Gradle: net.sf.jung:jung-visualization:2.1.1">
+    <CLASSES>
+      <root url="jar://$USER_HOME$/.gradle/caches/modules-2/files-2.1/net.sf.jung/jung-visualization/2.1.1/40488654daea1f57e0790e40153be19a307943dd/jung-visualization-2.1.1.jar!/" />
+    </CLASSES>
+    <JAVADOC />
+    <SOURCES>
+      <root url="jar://$USER_HOME$/.gradle/caches/modules-2/files-2.1/net.sf.jung/jung-visualization/2.1.1/609ff598dca52738a22c78b911496355aec4e797/jung-visualization-2.1.1-sources.jar!/" />
+    </SOURCES>
+  </library>
+</component>
