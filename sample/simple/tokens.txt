@@ -1,0 +1,6 @@
+(computer,C,0)
+(computer,C,1)
+(computer,C,2)
+(diary,D,0)
+(computer,C,3)
+(diary,D,1)

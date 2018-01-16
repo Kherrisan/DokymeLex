@@ -1,0 +1,13 @@
+{
+int you;
+int me;
+int distance;
+you=10000;
+me=0;
+while(you!=me){
+distance=you-me;
+me+=distance*255;
+me%=255;
+you-=me;
+}
+}
