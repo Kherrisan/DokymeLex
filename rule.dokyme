@@ -7,7 +7,6 @@ private int counter = 0;
 %%
 id      {return "ID";}
 number  {return "CONSTANT";}
-
 =     {return "ASN";}
 \+     {return "ADD";}
 \-     {return "SUB";}
@@ -22,7 +21,6 @@ number  {return "CONSTANT";}
 \+\+    {return "INC";}
 \-\-    {return "DEC";}
 ;   {return "SEMI";}
-
 %%
 private void increment(){
     counter++;
