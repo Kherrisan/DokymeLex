@@ -2,13 +2,16 @@ package com.seu.cose.dokyme;
 
 import org.apache.commons.cli.*;
 
+import java.io.BufferedInputStream;
+import java.io.BufferedOutputStream;
+import java.io.FileOutputStream;
 import java.util.Set;
 
 public class Main {
 
     private static String generatedFilePath;
     private static String lexFilePath;
-    public static String packageInfo;
+    public static String packageInfo = "com";
 
     public static boolean debug;
 
@@ -16,13 +19,30 @@ public class Main {
         CommandLineParser parser = new DefaultParser();
         Options options = new Options();
         try {
+            options.addOption("s", "sample", false, "Generate the sample lex file.");
             options.addOption("h", "help", false, "Print the help information.");
             options.addOption("v", "version", false, "Print the version information.");
             options.addOption("l", "lex", true, "The path to lex file.");
             options.addOption("o", "output", true, "The path to generate new parser source .java file.");
             options.addOption("d", "debug", false, "Print debug output.");
-            options.addOption("p", "package", true, "Specified the generated source file package name.Default:defualt");
+            options.addOption("p", "package", true, "Specified the generated source file package name.Default:com");
             CommandLine cmd = parser.parse(options, args);
+            if (cmd.hasOption("s")) {
+                try {
+                    BufferedInputStream inputStream = new BufferedInputStream(Main.class.getResourceAsStream("/lex.txt"));
+                    BufferedOutputStream outputStream = new BufferedOutputStream(new FileOutputStream("./lex.txt"));
+                    byte[] buffer = new byte[4096];
+                    inputStream.read(buffer);
+                    outputStream.write(buffer);
+                    inputStream.close();
+                    outputStream.close();
+                } catch (Exception e) {
+                    e.printStackTrace();
+                    System.exit(1);
+                }
+                System.out.println("Generate a sample lex file in the current directory.");
+                System.exit(0);
+            }
             if (cmd.hasOption("h")) {
                 HelpFormatter formatter = new HelpFormatter();
                 formatter.printHelp("Options", options);
