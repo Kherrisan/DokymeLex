@@ -33,7 +33,7 @@ public class Scanner {
     private int i;
     private boolean reachEnd;
 
-    private DokymeLexer(String[] args) {
+    private Scanner(String[] args) {
         parseCmd(args);
         run();
     }

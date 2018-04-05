@@ -11,9 +11,9 @@
     <orderEntry type="sourceFolder" forTests="false" />
     <orderEntry type="module" module-name="DokymeLex_main" />
     <orderEntry type="library" name="Gradle: net.sf.jung:jung-visualization:2.1.1" level="project" />
-    <orderEntry type="library" name="Gradle: net.sf.jung:jung-api:2.1.1" level="project" />
     <orderEntry type="library" name="Gradle: net.sf.jung:jung-graph-impl:2.1.1" level="project" />
     <orderEntry type="library" name="Gradle: net.sf.jung:jung-algorithms:2.1.1" level="project" />
+    <orderEntry type="library" name="Gradle: net.sf.jung:jung-api:2.1.1" level="project" />
     <orderEntry type="library" name="Gradle: commons-cli:commons-cli:1.4" level="project" />
     <orderEntry type="library" name="Gradle: junit:junit:4.12" level="project" />
     <orderEntry type="library" name="Gradle: com.google.guava:guava:19.0" level="project" />
