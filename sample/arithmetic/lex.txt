@@ -1,0 +1,30 @@
+[0-9]       {digit}
+[a-zA-Z]    {letter}
+letter(letter|digit)*   {id}
+digit+      {number}
+[ \r\n\t] {blank}
+%%
+private int counter = 0;
+%%
+blank   {return "BLANK";}
+\t  {return "BLANK";}
+
+=     {return "ASN";}
+\+     {return "ADD";}
+\-     {return "SUB";}
+\*     {return "MUL";}
+/     {return "DIV";}
+%     {return "MOD";}
+
+\(  {return "LPARE";}
+\)  {return "RPARE";}
+
+;   {return "SEMI";}
+
+id      {return "ID";}
+number  {return "CONSTANT";}
+
+%%
+public static void main(String[] args){
+    new Scanner(args);
+}

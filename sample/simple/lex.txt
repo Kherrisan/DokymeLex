@@ -1,0 +1,14 @@
+[ \r\n\t] {blank}
+%%
+private int counter = 0;
+%%
+blank   {return "BLANK";}
+\t  {return "BLANK";}
+
+computer    {return "C";}
+diary   {return "D";}
+
+%%
+public static void main(String[] args){
+    new Scanner(args);
+}
